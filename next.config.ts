@@ -12,8 +12,10 @@ import type { NextConfig } from "next";
  * These are dev-only origins. Production (Vercel) is same-origin and needs none.
  */
 const nextConfig: NextConfig = {
-  serverActions: {
-    allowedOrigins: ["localhost:3000", "127.0.0.1:3000", "*.app.github.dev"],
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3000", "127.0.0.1:3000", "*.app.github.dev"],
+    },
   },
 };
 
