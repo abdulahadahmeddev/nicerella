@@ -1,0 +1,8 @@
+- generic [active] [ref=f4e1]:
+  - main [ref=f4e2]:
+    - generic [ref=f4e3]:
+      - heading "Page not found" [level=1] [ref=f4e7]
+      - paragraph [ref=f4e8]: The page you're looking for doesn't exist or may have been moved.
+      - link "Go Home" [ref=f4e9] [cursor=pointer]:
+        - /url: /
+  - button "Open Next.js Dev Tools" [ref=f4e15] [cursor=pointer]

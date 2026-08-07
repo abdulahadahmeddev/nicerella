@@ -1,0 +1,63 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e29] [cursor=pointer]
+  - alert [ref=e33]: Create your account
+  - main [ref=e101]:
+    - generic [ref=e102]:
+      - link "Nicerella — home" [ref=e104] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e108]: nicerella
+      - heading "Create your account" [level=1] [ref=e109]
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e114]:
+            - heading "Create your account" [level=1] [ref=e115]
+            - paragraph [ref=e116]: Welcome! Please fill in the details to get started.
+          - generic [ref=e117]:
+            - generic [ref=e119]:
+              - button "Sign in with GitHub GitHub" [disabled]:
+                - generic:
+                  - generic:
+                    - generic "Sign in with GitHub"
+                  - generic: GitHub
+              - button "Sign in with Google Google" [disabled]:
+                - generic:
+                  - generic:
+                    - generic "Sign in with Google"
+                  - generic: Google
+            - paragraph [ref=e132]: or
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e138]:
+                  - generic [ref=e139]: Email address
+                  - textbox "Email address" [disabled]:
+                    - /placeholder: Enter your email address
+                    - text: test-nicerella@example.com
+                - generic [ref=e144]:
+                  - generic [ref=e145]:
+                    - generic [ref=e146]: Password
+                    - generic [ref=e148]:
+                      - textbox "Password" [disabled]:
+                        - /placeholder: Create a password
+                        - text: TestPassword123!
+                      - button "Show password" [ref=e150] [cursor=pointer]
+                  - generic [ref=e154]: Your password meets all the necessary requirements.
+                  - paragraph [ref=e180]: Your password meets all the necessary requirements.
+              - generic [ref=e156]:
+                - button "Loading" [disabled]:
+                  - generic:
+                    - generic "Loading"
+        - generic [ref=e161]:
+          - generic [ref=e162]:
+            - generic [ref=e163]: Already have an account?
+            - link "Sign in" [ref=e164] [cursor=pointer]:
+              - /url: http://localhost:3000/sign-in
+          - generic [ref=e166]:
+            - generic [ref=e168]:
+              - paragraph [ref=e169]: Secured by
+              - link "Clerk logo" [ref=e170] [cursor=pointer]:
+                - /url: https://go.clerk.com/components
+            - paragraph [ref=e176]: Development mode
+      - paragraph [ref=e177]:
+        - text: Already have an account?
+        - link "Sign in" [ref=e178] [cursor=pointer]:
+          - /url: /sign-in

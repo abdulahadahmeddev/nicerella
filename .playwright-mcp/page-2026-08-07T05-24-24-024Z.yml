@@ -1,0 +1,17 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "Nicerella — home" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e8]: nicerella
+  - main [ref=e9]:
+    - generic [ref=e10]:
+      - heading "Find products you can actually trust" [level=1] [ref=e11]
+      - paragraph [ref=e12]: Nicerella uses AI to detect fake, bot-written, and incentivized reviews — so every score reflects genuine customer experience.
+      - search [ref=e14]:
+        - generic [ref=e15]: Search products
+        - searchbox "Search products" [ref=e16]
+    - generic [ref=e18]:
+      - heading "No analyzed products yet" [level=2] [ref=e22]
+      - paragraph [ref=e23]: Once products are scraped and analyzed, their trust scores will appear here.
+  - button "Open Next.js Dev Tools" [ref=e29] [cursor=pointer]
+  - alert [ref=e33]

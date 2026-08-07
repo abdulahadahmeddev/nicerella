@@ -1,26 +1,480 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Nicerella Design System
+  Dark theme primary · WCAG AA compliant · Professional & distinctive
+  Source of truth: DESIGN_SYSTEM.md
+
+  Tokens live in @theme (Tailwind v4 CSS-first config): each emits a CSS
+  custom property AND generates Tailwind utilities (bg-background,
+  text-foreground, rounded-lg, shadow-md, ...). Component classes below are
+  wrapped in @layer components so Tailwind utilities can override them.
+*/
+
+/* ============================================================
+   Design Tokens
+   ============================================================ */
+@theme {
+  /* Dark Theme Colors */
+  --color-background: #0b0f1a;
+  --color-surface: #131825;
+  --color-surface-elevated: #1a1f2e;
+  --color-foreground: #f1f5f9;
+  --color-foreground-muted: #94a3b8;
+
+  /* Brand Colors */
+  --color-primary: #7c3aed;
+  --color-primary-hover: #9f67ff;
+  --color-secondary: #a78bfa;
+  --color-accent: #06b6d4;
+  --color-accent-glow: #22d3ee;
+
+  /* Borders & Effects */
+  --color-border: rgba(148, 163, 184, 0.15);
+  --color-border-subtle: rgba(148, 163, 184, 0.08);
+  --color-ring: #7c3aed;
+  --color-destructive: #ef4444;
+
+  /* Trust Score Colors */
+  --trust-high: #10b981;
+  --trust-medium-high: #22c55e;
+  --trust-mixed: #f59e0b;
+  --trust-suspicious: #f97316;
+  --trust-low: #ef4444;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows (dark theme optimized) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md:
+    0 4px 6px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg:
+    0 10px 15px rgba(0, 0, 0, 0.5),
+    0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-xl:
+    0 20px 25px rgba(0, 0, 0, 0.6),
+    0 10px 10px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(124, 58, 237, 0.3);
+  --shadow-accent-glow: 0 0 20px rgba(6, 182, 212, 0.3);
+
+  /* Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* Inter is self-hosted via next/font/google; the variable is set on <html>. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans:
+    var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Spacing tokens — plain CSS variables for inline styles (var(--space-md)). */
+:root {
+  --space-xs: 0.25rem; /* 4px  */
+  --space-sm: 0.5rem; /* 8px  */
+  --space-md: 1rem; /* 16px */
+  --space-lg: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
+  --space-2xl: 3rem; /* 48px */
+  --space-3xl: 4rem; /* 64px */
+  --space-4xl: 6rem; /* 96px */
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(124, 58, 237, 0.35);
+  color: var(--color-foreground);
+}
+
+/* ============================================================
+   Component classes — layered so utilities can override them
+   ============================================================ */
+@layer components {
+  /* ---- Typography Scale ---- */
+  .text-display {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .text-h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .text-h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .text-h3 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .text-h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .text-body {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .text-body-sm {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .text-caption {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    color: var(--color-foreground-muted);
+  }
+
+  .text-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+
+  /* ---- Glow Effects (Signature) ---- */
+  .glow-primary {
+    box-shadow:
+      0 0 20px rgba(124, 58, 237, 0.3),
+      0 0 40px rgba(124, 58, 237, 0.15);
+  }
+
+  .glow-accent {
+    box-shadow:
+      0 0 20px rgba(6, 182, 212, 0.3),
+      0 0 40px rgba(6, 182, 212, 0.15);
+  }
+
+  .glow-trust-high {
+    box-shadow:
+      0 0 20px rgba(16, 185, 129, 0.3),
+      0 0 40px rgba(16, 185, 129, 0.15);
+  }
+
+  /* ---- Buttons ---- */
+  .btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    transition: all 200ms ease;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .btn-primary:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  .btn-primary:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    padding: 10px 22px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    transition: all 200ms ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(124, 58, 237, 0.1);
+    border-color: var(--color-primary-hover);
+    color: var(--color-primary-hover);
+  }
+
+  .btn-secondary:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-foreground);
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    transition: all 200ms ease;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-ghost:hover {
+    background: var(--color-surface-elevated);
+  }
+
+  .btn-ghost:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  .btn-ghost:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 0.8125rem;
+  }
+
+  .btn-lg {
+    padding: 14px 28px;
+    font-size: 0.9375rem;
+  }
+
+  /* ---- Inputs ---- */
+  .input {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    padding: 12px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+    width: 100%;
+  }
+
+  .input::placeholder {
+    color: var(--color-foreground-muted);
+  }
+
+  .input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+  }
+
+  .input:hover:not(:focus) {
+    border-color: rgba(148, 163, 184, 0.3);
+  }
+
+  /* ---- Cards ---- */
+  .card {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    padding: var(--space-lg);
+    transition: all 200ms ease;
+  }
+
+  .card:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-elevated {
+    background: var(--color-surface-elevated);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* ---- Layout Patterns ---- */
+  .page-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  @media (min-width: 768px) {
+    .page-container {
+      padding: 0 var(--space-lg);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-container {
+      padding: 0 var(--space-xl);
+    }
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 640px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .product-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ---- Motion ---- */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface) 0%,
+      var(--color-surface-elevated) 50%,
+      var(--color-surface) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+  }
+
+  .trust-orb {
+    background: radial-gradient(
+      circle,
+      rgba(124, 58, 237, 0.6) 0%,
+      rgba(6, 182, 212, 0.3) 50%,
+      transparent 100%
+    );
+    animation: trust-orb-drift 8s ease-in-out infinite;
+  }
+
+  .auth-card {
+    animation: auth-card-enter 300ms ease-out;
+  }
+
+  .trust-glow-pulse {
+    animation: trust-glow-pulse 3s ease-in-out infinite;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Keyframes referenced by @layer components above */
+@keyframes skeleton-pulse {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes auth-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes trust-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes trust-orb-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 30px) scale(0.95);
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

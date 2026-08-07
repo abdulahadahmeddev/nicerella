@@ -1,0 +1,63 @@
+- generic [active] [ref=f4e1]:
+  - main [ref=f4e2]:
+    - generic [ref=f4e3]:
+      - link "Nicerella — home" [ref=f4e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f4e9]: nicerella
+      - heading "Create your account" [level=1] [ref=f4e10]
+      - generic [ref=f4e23]:
+        - generic [ref=f4e24]:
+          - generic [ref=f4e26]:
+            - heading "Create your account" [level=1] [ref=f4e27]
+            - paragraph [ref=f4e28]: Welcome! Please fill in the details to get started.
+          - generic [ref=f4e29]:
+            - generic [ref=f4e31]:
+              - button "Sign in with GitHub GitHub" [disabled]:
+                - generic:
+                  - generic:
+                    - generic "Sign in with GitHub"
+                  - generic: GitHub
+              - button "Sign in with Google Google" [disabled]:
+                - generic:
+                  - generic:
+                    - generic "Sign in with Google"
+                  - generic: Google
+            - paragraph [ref=f4e44]: or
+            - generic [ref=f4e46]:
+              - generic [ref=f4e47]:
+                - generic [ref=f4e50]:
+                  - generic [ref=f4e51]: Email address
+                  - textbox "Email address" [disabled]:
+                    - /placeholder: Enter your email address
+                    - text: test-user@example.com
+                - generic [ref=f4e56]:
+                  - generic [ref=f4e57]:
+                    - generic [ref=f4e58]: Password
+                    - generic [ref=f4e60]:
+                      - textbox "Password" [disabled]:
+                        - /placeholder: Create a password
+                        - text: Nicerella-Test-2026!
+                      - button "Show password" [ref=f4e62] [cursor=pointer]
+                  - generic [ref=f4e66]: Your password meets all the necessary requirements.
+                  - paragraph [ref=f4e91]: Your password meets all the necessary requirements.
+              - generic [ref=f4e68]:
+                - button "Loading" [disabled]:
+                  - generic:
+                    - generic "Loading"
+        - generic [ref=f4e73]:
+          - generic [ref=f4e74]:
+            - generic [ref=f4e75]: Already have an account?
+            - link "Sign in" [ref=f4e76] [cursor=pointer]:
+              - /url: http://localhost:3000/sign-in
+          - generic [ref=f4e78]:
+            - generic [ref=f4e80]:
+              - paragraph [ref=f4e81]: Secured by
+              - link "Clerk logo" [ref=f4e82] [cursor=pointer]:
+                - /url: https://go.clerk.com/components
+            - paragraph [ref=f4e88]: Development mode
+      - paragraph [ref=f4e11]:
+        - text: Already have an account?
+        - link "Sign in" [ref=f4e12] [cursor=pointer]:
+          - /url: /sign-in
+  - button "Open Next.js Dev Tools" [ref=f4e18] [cursor=pointer]
+  - alert [ref=f4e89]

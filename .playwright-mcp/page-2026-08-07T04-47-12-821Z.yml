@@ -1,0 +1,13 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e29] [cursor=pointer]
+  - alert [ref=e33]
+  - main [ref=e36]:
+    - generic [ref=e37]:
+      - link "Nicerella — home" [ref=e39] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e43]: nicerella
+      - heading "Welcome back" [level=1] [ref=e44]
+      - paragraph [ref=e45]:
+        - text: Don't have an account?
+        - link "Sign up" [ref=e46] [cursor=pointer]:
+          - /url: /sign-up
