@@ -31,7 +31,7 @@ export default function SignInPage() {
         />
 
         <p className="text-body-sm mt-6 text-center text-[var(--color-foreground-muted)]">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/sign-up"
             className="font-medium text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"

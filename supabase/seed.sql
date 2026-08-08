@@ -1,0 +1,63 @@
+-- ============================================================================
+-- nicerella — example seed data
+-- ----------------------------------------------------------------------------
+-- OPTIONAL. Run after supabase/schema.sql. Contains only clearly-labeled
+-- placeholders — replace <...> values with real sources before inserting.
+--
+-- Per AGENTS.md section 8, source URLs are loaded from the `sources` table;
+-- we deliberately do NOT invent real source URLs here.
+-- ============================================================================
+
+-- --- Example source (replace <...> placeholders) -----------------------------
+-- insert into public.sources (name, listing_url, parser_strategy, logo_url, active)
+-- values (
+--   '<Source display name>',
+--   '<https://example.com/category/products>',
+--   '<generic | amazon | ...>',
+--   '<https://example.com/logo.png>',
+--   true
+-- );
+
+-- --- Example product + reviews + analysis round-trip --------------------------
+-- (uncomment once a real source exists; ids are examples)
+-- insert into public.products
+--   (source_id, original_url, canonical_url, title, image_url, price, category)
+-- values (
+--   (select id from public.sources limit 1),
+--   '<https://example.com/product/abc123>',
+--   '<https://example.com/product/abc123>',
+--   '<Product title>',
+--   '<https://example.com/image.png>',
+--   19.99,
+--   '<category>'
+-- );
+--
+-- insert into public.reviews (product_id, review_identifier, rating, raw_text, review_date, verified_purchase)
+-- values (
+--   (select id from public.products limit 1),
+--   '<review-id-1>',
+--   5,
+--   '<Review body text>',
+--   now() - interval '3 days',
+--   true
+-- );
+--
+-- insert into public.product_trust_analyses
+--   (product_id, trust_score, trust_label, positive_pct, neutral_pct, negative_pct,
+--    fake_review_pct, authenticity_confidence, red_flags, neutral_summary, disclaimer, model_name)
+-- values (
+--   (select id from public.products limit 1),
+--   0.82,
+--   'mostly trustworthy',
+--   70, 20, 10,
+--   8,
+--   0.74,
+--   '[]'::jsonb,
+--   '<Neutral summary of genuine reviewer sentiment>',
+--   'This is an AI estimate based on review signals, not a certified fraud finding.',
+--   '<model-name>'
+-- );
+--
+-- update public.products
+-- set analyzed_at = now()
+-- where id = (select id from public.products limit 1);

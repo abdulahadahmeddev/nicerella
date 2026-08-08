@@ -9,14 +9,26 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/cerebras": "^3.0.27",
+    "@ai-sdk/google": "^4.0.39",
+    "@ai-sdk/groq": "^4.0.26",
+    "@ai-sdk/huggingface": "^2.0.27",
+    "@ai-sdk/mistral": "^4.0.27",
     "@clerk/nextjs": "^7.7.0",
     "@phosphor-icons/react": "^2.1.10",
+    "@stripe/react-stripe-js": "^6.8.0",
+    "@stripe/stripe-js": "^9.13.0",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.2",
+    "ai": "^7.0.58",
+    "cheerio": "^1.2.0",
     "clsx": "^2.1.1",
     "next": "16.3.0",
+    "posthog-js": "^1.414.0",
+    "posthog-node": "^5.48.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "stripe": "^22.4.0",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {

@@ -1,16 +1,24 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
-  /** Right-aligned actions slot — reserved for auth (Clerk) controls later. */
+  /** Right-aligned actions slot — reserved for auth (Clerk) controls. */
   actions?: ReactNode;
   className?: string;
 }
 
+const NAV_LINKS = [
+  { href: "/", label: "Products" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/articles", label: "Articles" },
+];
+
 /**
- * Sticky top navigation bar. Logo on the left, optional actions (auth
- * buttons) on the right. Uses surface-elevated background with blur.
+ * Sticky top navigation bar. Logo on the left, primary nav links in the
+ * center, optional actions (auth buttons) on the right. Uses surface-elevated
+ * background with blur.
  */
 export function Header({ actions, className }: HeaderProps) {
   return (
@@ -21,8 +29,21 @@ export function Header({ actions, className }: HeaderProps) {
         className
       )}
     >
-      <div className="page-container flex h-16 items-center justify-between">
-        <Logo />
+      <div className="page-container flex h-16 items-center justify-between gap-4">
+        <div className="flex items-center gap-8">
+          <Logo />
+          <nav aria-label="Primary" className="hidden items-center gap-1 sm:flex">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-md px-3 py-2 text-body-sm text-[var(--color-foreground-muted)] transition-colors hover:bg-[var(--color-surface-elevated)] hover:text-[var(--color-foreground)]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
         {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
       </div>
     </header>

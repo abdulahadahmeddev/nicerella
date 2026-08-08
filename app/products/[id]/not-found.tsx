@@ -16,7 +16,7 @@ export default function ProductNotFound() {
         />
         <h1 className="text-h1 mb-4 text-[var(--color-foreground)]">Product not found</h1>
         <p className="text-body mb-8 text-[var(--color-foreground-muted)]">
-          This product doesn't exist or hasn't been analyzed yet.
+          This product doesn&apos;t exist or hasn&apos;t been analyzed yet.
         </p>
         <Button href="/" size="lg">
           Go Home

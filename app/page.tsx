@@ -4,7 +4,9 @@ import { TrustOrb } from "@/components/ui/trust-orb";
 import { SearchBar } from "@/components/ui/search-bar";
 import { Card3D } from "@/components/ui/3d-card";
 import { ProductCard } from "@/components/ui/product-card";
+import { AdSlot } from "@/components/ads/ad-slot";
 import { ShieldCheckIcon } from "@/components/ui/icons";
+import { AD_SLOTS } from "@/lib/ads/env";
 import { getProducts } from "@/lib/api/products";
 
 export default async function Home() {
@@ -68,6 +70,11 @@ export default async function Home() {
               </p>
             </div>
           )}
+        </section>
+
+        {/* Ad slot below the product grid */}
+        <section className="page-container pb-16">
+          <AdSlot slot={AD_SLOTS.homeBelowGrid} />
         </section>
       </main>
     </>

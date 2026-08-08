@@ -8,6 +8,7 @@ import {
   TrendUpIcon as PhosphorTrendUp,
   MagnifyingGlassIcon as PhosphorMagnifyingGlass,
   WarningIcon as PhosphorWarning,
+  CheckIcon as PhosphorCheck,
   type IconProps,
 } from "@phosphor-icons/react";
 
@@ -46,4 +47,8 @@ export function MagnifyingGlassIcon(props: IconProps) {
 
 export function WarningIcon(props: IconProps) {
   return <PhosphorWarning {...props} />;
+}
+
+export function CheckIcon(props: IconProps) {
+  return <PhosphorCheck {...props} />;
 }

@@ -1,0 +1,55 @@
+- generic [active] [ref=f5e1]:
+  - banner [ref=f5e2]:
+    - link "Nicerella — home" [ref=f5e5] [cursor=pointer]:
+      - /url: /
+      - generic [ref=f5e9]: nicerella
+  - main [ref=f5e10]:
+    - generic [ref=f5e11]:
+      - heading "Find products you can actually trust" [level=1] [ref=f5e12]
+      - paragraph [ref=f5e13]: Nicerella uses AI to detect fake, bot-written, and incentivized reviews — so every score reflects genuine customer experience.
+      - search [ref=f5e15]:
+        - generic [ref=f5e16]: Search products
+        - searchbox "Search products" [ref=f5e17]
+    - generic [ref=f5e18]:
+      - generic [ref=f5e19]:
+        - heading "Analyzed products" [level=2] [ref=f5e20]
+        - generic [ref=f5e21]: 3 products
+      - generic [ref=f5e22]:
+        - 'link "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics — trust highly trustworthy" [ref=f5e24] [cursor=pointer]':
+          - /url: /products/94aaf9fd-0790-42b5-ad6d-9c1bcb8c7302
+          - generic [ref=f5e25]:
+            - 'img "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [ref=f5e26]'
+            - generic [ref=f5e27]: 92%
+          - generic [ref=f5e31]:
+            - 'heading "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [level=3] [ref=f5e32]'
+            - generic [ref=f5e33]:
+              - generic [ref=f5e34]: 4 reviews
+              - generic [ref=f5e37]: Trust
+        - 'link "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, White | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics — trust highly trustworthy" [ref=f5e41] [cursor=pointer]':
+          - /url: /products/66a81491-e229-47c8-980b-88442a3064ac
+          - generic [ref=f5e42]:
+            - 'img "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, White | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [ref=f5e43]'
+            - generic [ref=f5e44]: 95%
+          - generic [ref=f5e48]:
+            - 'heading "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, White | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [level=3] [ref=f5e49]'
+            - generic [ref=f5e50]:
+              - generic [ref=f5e51]: 4 reviews
+              - generic [ref=f5e54]: Trust
+        - 'link "Amazon.com: Hybrid Active Noise Cancelling Bluetooth Headphones Wireless Headphones | Over Ear, 120H Playtime, Hi-Res Audio, Deep Bass, Memory Foam Ear Cups for Home Office Travel Black : Electronics — trust suspicious" [ref=f5e58] [cursor=pointer]':
+          - /url: /products/f22d678e-6ce5-4d20-9cdb-78944984d4a2
+          - generic [ref=f5e59]:
+            - 'img "Amazon.com: Hybrid Active Noise Cancelling Bluetooth Headphones Wireless Headphones | Over Ear, 120H Playtime, Hi-Res Audio, Deep Bass, Memory Foam Ear Cups for Home Office Travel Black : Electronics" [ref=f5e60]'
+            - generic [ref=f5e61]: 35%
+          - generic [ref=f5e65]:
+            - 'heading "Amazon.com: Hybrid Active Noise Cancelling Bluetooth Headphones Wireless Headphones | Over Ear, 120H Playtime, Hi-Res Audio, Deep Bass, Memory Foam Ear Cups for Home Office Travel Black : Electronics" [level=3] [ref=f5e66]'
+            - generic [ref=f5e67]:
+              - generic [ref=f5e68]: 4 reviews
+              - generic [ref=f5e71]: Trust
+  - button "Open Next.js Dev Tools" [ref=f5e80] [cursor=pointer]:
+    - generic [ref=f5e83]:
+      - text: Compiling
+      - generic [ref=f5e84]:
+        - generic [ref=f5e85]: .
+        - generic [ref=f5e86]: .
+        - generic [ref=f5e87]: .
+  - alert [ref=f5e88]

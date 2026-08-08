@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { Header } from "@/components/layout/header";
+import { AuthActions } from "@/components/layout/auth-actions";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Card3D } from "@/components/ui/3d-card";
 import { TrustMeter } from "@/components/ui/trust-meter";
@@ -10,7 +11,12 @@ import { SentimentChart } from "@/components/ui/sentiment-chart";
 import { RedFlagsList } from "@/components/ui/red-flags-list";
 import { ProductCard } from "@/components/ui/product-card";
 import { TrendUpIcon } from "@/components/ui/icons";
+import { ProGate } from "@/components/billing/pro-gate";
+import { AdSlot } from "@/components/ads/ad-slot";
+import { AD_SLOTS } from "@/lib/ads/env";
 import { getProduct } from "@/lib/api/products";
+import { getUserPlan } from "@/lib/data/subscriptions";
+import { auth } from "@clerk/nextjs/server";
 
 interface ProductDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -31,6 +37,8 @@ export default async function ProductDetailsPage({
 }: ProductDetailsPageProps) {
   const { id } = await params;
   const product = await getProduct(id);
+  const { userId } = await auth();
+  const plan = await getUserPlan(userId);
 
   if (!product) notFound();
 
@@ -38,7 +46,7 @@ export default async function ProductDetailsPage({
 
   return (
     <>
-      <Header />
+      <Header actions={<AuthActions />} />
 
       <main className="page-container flex-1 py-8 sm:py-12">
         <Breadcrumb
@@ -99,7 +107,7 @@ export default async function ProductDetailsPage({
                 </span>
                 <h2 className="text-h4 text-[var(--color-foreground)]">Analysis in progress</h2>
                 <p className="text-body-sm max-w-sm text-[var(--color-foreground-muted)]">
-                  We're still reviewing the reviews for this product. Check back
+                  We&apos;re still reviewing the reviews for this product. Check back
                   shortly for its trust score.
                 </p>
               </div>
@@ -107,44 +115,51 @@ export default async function ProductDetailsPage({
           </div>
         </div>
 
-        {/* Analysis breakdown */}
-        {analysis && (
-          <>
-            <section className="mt-10 grid gap-6 md:grid-cols-2">
-              <div className="card">
-                <h3 className="text-h4 mb-4 text-[var(--color-foreground)]">Review Sentiment</h3>
-                <SentimentChart breakdown={analysis.sentiment} />
-              </div>
-              <RedFlagsList flags={analysis.redFlags} />
-            </section>
+        {/* Ad slot between hero and analysis */}
+        <div className="mt-10">
+          <AdSlot slot={AD_SLOTS.productBelowHero} />
+        </div>
 
-            <section className="card mt-6">
-              <h3 className="text-h4 mb-2 text-[var(--color-foreground)]">
-                What reviewers actually say
-              </h3>
-              <p className="text-body text-[var(--color-foreground-muted)]">
-                {analysis.neutralSummary}
-              </p>
-              {analysis.disclaimer ? (
-                <p className="text-caption mt-4 italic text-[var(--color-foreground-muted)]">
-                  {analysis.disclaimer}
+        {/* Analysis breakdown — Pro-gated (server-side, not shipped to non-Pro) */}
+        <ProGate isPro={plan.isPro}>
+          {analysis && (
+            <>
+              <section className="mt-10 grid gap-6 md:grid-cols-2">
+                <div className="card">
+                  <h3 className="text-h4 mb-4 text-[var(--color-foreground)]">Review Sentiment</h3>
+                  <SentimentChart breakdown={analysis.sentiment} />
+                </div>
+                <RedFlagsList flags={analysis.redFlags} />
+              </section>
+
+              <section className="card mt-6">
+                <h3 className="text-h4 mb-2 text-[var(--color-foreground)]">
+                  What reviewers actually say
+                </h3>
+                <p className="text-body text-[var(--color-foreground-muted)]">
+                  {analysis.neutralSummary}
                 </p>
-              ) : null}
-            </section>
-          </>
-        )}
+                {analysis.disclaimer ? (
+                  <p className="text-caption mt-4 italic text-[var(--color-foreground-muted)]">
+                    {analysis.disclaimer}
+                  </p>
+                ) : null}
+              </section>
+            </>
+          )}
 
-        {/* Similar products */}
-        {product.similarProducts.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-h3 mb-6 text-[var(--color-foreground)]">Similar products</h2>
-            <div className="product-grid">
-              {product.similarProducts.map((similar) => (
-                <ProductCard key={similar.id} product={similar} />
-              ))}
-            </div>
-          </section>
-        )}
+          {/* Similar products */}
+          {product.similarProducts.length > 0 && (
+            <section className="mt-12">
+              <h2 className="text-h3 mb-6 text-[var(--color-foreground)]">Similar products</h2>
+              <div className="product-grid">
+                {product.similarProducts.map((similar) => (
+                  <ProductCard key={similar.id} product={similar} />
+                ))}
+              </div>
+            </section>
+          )}
+        </ProGate>
       </main>
     </>
   );

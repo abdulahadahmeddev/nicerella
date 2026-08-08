@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nicerella
 
-## Getting Started
+AI-powered product review trust and authenticity platform. Nicerella collects real product reviews from configured e-commerce sources, analyzes them with AI to detect fake, bot-written, incentivized, or manipulated reviews, stores everything in Supabase, and displays a reader-friendly trust score and review breakdown for every product.
 
-First, run the development server:
+## Stack
+
+- **Next.js** (App Router, server components) + TypeScript
+- **Clerk** — authentication
+- **Supabase** — Postgres, RLS, pgvector similarity search, service-role access
+- **Oxylabs** — Web Scraper API + Scheduler for recurring listing scraping
+- **Vercel AI SDK** — trust analysis (provider failover: Cerebras → Gemini → Groq → Hugging Face → Mistral)
+- **Stripe** — Pro/Enterprise subscriptions, 14-day no-card free trial, Billing Portal
+- **PostHog** — product analytics (pageviews, identity, billing + pipeline events)
+- **Google AdSense** — optional responsive ad slots (off until approved)
+- **Vercel Cron** — automatic scheduled-result processing + analysis
+- **Tailwind CSS** + shadcn-style UI
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in your keys (all optional)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. See `.env.example` for every variable and what it gates.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `app/` — pages and API routes
+- `app/api/` — thin route handlers (scrape, analyze, oxylabs, stripe, cron)
+- `components/` — UI components (layout, billing, ads, analytics, ui)
+- `lib/api/` — UI data-access seam (server-only, reads stored data)
+- `lib/data/` — Supabase data layer
+- `lib/pipeline/` — scrape + analysis orchestration
+- `lib/scraping/` — Oxylabs + parsing
+- `lib/ai/` — AI analysis + embeddings
+- `lib/stripe/` — billing integration
+- `lib/posthog/`, `lib/ads/` — analytics + AdSense config
+- `supabase/` — schema, migrations, pgvector SQL
+- `prompts/` — implementation prompts (AGENTS.md workflow)
 
-## Learn More
+## Core flows
 
-To learn more about Next.js, take a look at the following resources:
+- **Scraping** — `POST /api/scrape` (admin secret) runs the scrape-to-insert pipeline: listing pages → candidate product links → detail + review scraping → validation → append-only insert.
+- **Analysis** — `POST /api/analyze` (admin secret) runs AI trust analysis on pending products, computes the 0–1 trust score, stores the analysis, and embeds it for pgvector similarity.
+- **Scheduling** — Oxylabs Scheduler scrapes listing pages on a recurring schedule; `GET /api/cron/pipeline` (Vercel Cron) processes completed jobs and runs analysis automatically.
+- **Billing** — `/pricing` starts a Stripe Checkout (14-day no-card trial). Webhooks mirror subscription state into `subscriptions`; the server-side `ProGate` ships gated analysis only to Pro users.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment (Vercel)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Push the repo to GitHub and import into Vercel.
+2. Set the env vars from `.env.example` (plus `CRON_SECRET` in Vercel's Cron settings).
+3. Configure Vercel Cron via `vercel.json` (add it after pushing, then deploy).
+4. Add the Stripe webhook endpoint `https://<your-app>.vercel.app/api/stripe/webhook` in the Stripe Dashboard, subscribed to `checkout.session.completed` and `customer.subscription.*`.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See `AGENTS.md` for the full architecture and operational rules.

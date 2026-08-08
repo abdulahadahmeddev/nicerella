@@ -30,7 +30,6 @@ export function Card3D({
 }: Card3DProps) {
   const cardRef = React.useRef<HTMLDivElement>(null);
   const frameRef = React.useRef(0);
-  const [style, setStyle] = React.useState<React.CSSProperties>({});
   const [glowPos, setGlowPos] = React.useState({ x: 50, y: 50 });
   const [hovered, setHovered] = React.useState(false);
 
