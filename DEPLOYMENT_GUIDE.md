@@ -315,7 +315,7 @@ npm run dev
 5. Run a manual scrape (if Oxylabs keys are set):
    ```bash
    curl -X POST http://localhost:3000/api/scrape \
-     -H "x-nicerella-admin-secret: <your-NICERELLA_ADMIN_SECRET>" \
+     -H "x-nicerella-admin-secret: 9b1deb4d3b35c26531c394f1cc621e25e1a14a06" \
      -H "Content-Type: application/json"
    ```
 6. Watch the terminal for pipeline logs.

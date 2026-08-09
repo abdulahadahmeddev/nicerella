@@ -205,3 +205,22 @@ revoke all on table
   public.oxylabs_schedule_runs,
   public.subscriptions
 from anon, authenticated, public;
+
+-- Explicitly grant full access to service_role. Do NOT rely on Supabase's
+-- automatic table grants: newer projects do not always grant service_role
+-- default privileges, leaving the service-role key with
+-- "permission denied for table <name>". Granting is idempotent and safe even
+-- where the default grants already exist.
+grant all on table
+  public.sources,
+  public.products,
+  public.reviews,
+  public.product_trust_analyses,
+  public.logs,
+  public.oxylabs_schedules,
+  public.oxylabs_schedule_runs,
+  public.subscriptions
+to service_role;
+
+-- logs.id is an identity column backed by a sequence.
+grant all on all sequences in schema public to service_role;

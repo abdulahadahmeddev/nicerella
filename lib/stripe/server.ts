@@ -51,6 +51,14 @@ const PRICE_CENTS: Record<PlanId, Record<BillingInterval, number>> = {
 };
 
 /**
+ * Managed Payments (Stripe enables it by default on new accounts) requires an
+ * eligible digital-goods `tax_code` on every product sold via Checkout; without
+ * it the session fails with "the product tax code is missing". This is a
+ * subscription SaaS, so we tag each product with the SaaS tax code.
+ */
+const PRODUCT_TAX_CODE = "txcd_10103000"; // SaaS — personal use
+
+/**
  * Resolve the Stripe Price id for a plan+interval: env override first, then a
  * stable-lookup_key price (found or auto-created in test mode).
  */
@@ -71,7 +79,13 @@ export async function getOrCreatePriceId(
     active: true,
     limit: 1,
   });
-  if (existing.data.length > 0) return existing.data[0].id;
+  if (existing.data.length > 0) {
+    // Prices auto-created before the tax_code requirement (or before this
+    // fix) already exist in the account — patch their product so Checkout
+    // still passes without manual Stripe Dashboard work.
+    await ensureProductTaxCode(stripe, existing.data[0].product);
+    return existing.data[0].id;
+  }
 
   const price = await stripe.prices.create({
     currency: "usd",
@@ -79,10 +93,30 @@ export async function getOrCreatePriceId(
     recurring: { interval: interval === "monthly" ? "month" : "year" },
     product_data: {
       name: `Nicerella ${plan === "pro" ? "Pro" : "Enterprise"} (${interval})`,
+      tax_code: PRODUCT_TAX_CODE,
     },
     lookup_key: lookupKey,
   });
   return price.id;
+}
+
+/**
+ * Managed Payments requires an eligible tax_code on each product. Idempotent:
+ * sets it only when missing, so already-correct products are untouched.
+ */
+async function ensureProductTaxCode(
+  stripe: Stripe,
+  productRef: string | Stripe.Product | Stripe.DeletedProduct,
+): Promise<void> {
+  // A deleted product can't be patched (and isn't sold anymore) — skip it.
+  if (typeof productRef !== "string" && productRef.deleted) return;
+  const product =
+    typeof productRef === "string"
+      ? await stripe.products.retrieve(productRef)
+      : productRef;
+  if (!product.tax_code) {
+    await stripe.products.update(product.id, { tax_code: PRODUCT_TAX_CODE });
+  }
 }
 
 export interface CheckoutOptions {
