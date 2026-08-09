@@ -58,12 +58,26 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           </p>
         </section>
 
-        {/* Success / canceled banners */}
+        {/* Success / canceled banners. The success banner must not lie: the
+            Stripe webhook mirrors the subscription into Supabase, and the
+            checkout redirect can land here a moment before that write lands.
+            Show the celebration only once the plan actually reads as Pro;
+            otherwise show an honest "activating" state. */}
         {success ? (
-          <div className="mx-auto mt-10 max-w-xl rounded-[var(--radius-lg)] border border-[var(--trust-high)] bg-[var(--trust-high)]/10 p-4 text-body-sm text-[var(--color-foreground)]">
-            <span className="font-medium text-[var(--trust-high)]">Welcome to Pro!</span>{" "}
-            Your subscription is active — enjoy unlimited trust analyses.
-          </div>
+          plan.isPro ? (
+            <div className="mx-auto mt-10 max-w-xl rounded-[var(--radius-lg)] border border-[var(--trust-high)] bg-[var(--trust-high)]/10 p-4 text-body-sm text-[var(--color-foreground)]">
+              <span className="font-medium text-[var(--trust-high)]">Welcome to Pro!</span>{" "}
+              Your subscription is active — enjoy unlimited trust analyses.
+            </div>
+          ) : (
+            <div className="mx-auto mt-10 max-w-xl rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4 text-body-sm text-[var(--color-foreground-muted)]">
+              <span className="font-medium text-[var(--color-foreground)]">
+                Subscription activating…
+              </span>{" "}
+              Your plan upgrade is being confirmed by the billing provider. This
+              usually takes a few seconds — refresh to see Pro unlocked.
+            </div>
+          )
         ) : null}
         {canceled ? (
           <div className="mx-auto mt-10 max-w-xl rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4 text-body-sm text-[var(--color-foreground-muted)]">

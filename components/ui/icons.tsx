@@ -9,6 +9,10 @@ import {
   MagnifyingGlassIcon as PhosphorMagnifyingGlass,
   WarningIcon as PhosphorWarning,
   CheckIcon as PhosphorCheck,
+  MessageCircleIcon as PhosphorMessageCircle,
+  XIcon as PhosphorX,
+  PaperPlaneRightIcon as PhosphorPaperPlaneRight,
+  SparkleIcon as PhosphorSparkle,
   type IconProps,
 } from "@phosphor-icons/react";
 
@@ -51,4 +55,20 @@ export function WarningIcon(props: IconProps) {
 
 export function CheckIcon(props: IconProps) {
   return <PhosphorCheck {...props} />;
+}
+
+export function MessageCircleIcon(props: IconProps) {
+  return <PhosphorMessageCircle {...props} />;
+}
+
+export function XIcon(props: IconProps) {
+  return <PhosphorX {...props} />;
+}
+
+export function SendIcon(props: IconProps) {
+  return <PhosphorPaperPlaneRight {...props} />;
+}
+
+export function SparklesIcon(props: IconProps) {
+  return <PhosphorSparkle {...props} />;
 }

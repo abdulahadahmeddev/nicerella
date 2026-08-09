@@ -17,6 +17,7 @@ import { AD_SLOTS } from "@/lib/ads/env";
 import { getProduct } from "@/lib/api/products";
 import { getUserPlan } from "@/lib/data/subscriptions";
 import { auth } from "@clerk/nextjs/server";
+import { ChatWidget } from "@/components/chat/chat-widget";
 
 interface ProductDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -185,6 +186,20 @@ export default async function ProductDetailsPage({
           )}
         </ProGate>
       </main>
+
+      {/* AI Chat Widget */}
+      <ChatWidget
+        context={{
+          productTitle: product.title,
+          trustScore: product.trustScore,
+          trustLabel: analysis?.trustLabel,
+          sentiment: analysis?.sentiment,
+          redFlags: analysis?.redFlags,
+          reviewCount: product.reviewCount,
+          fakePercentage: analysis?.fakeReviewPercentage,
+        }}
+        isPro={plan.isPro}
+      />
     </>
   );
 }
