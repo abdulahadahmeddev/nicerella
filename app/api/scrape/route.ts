@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { runScrapePipeline } from "@/lib/pipeline/scrape";
 import { isAdminRequest } from "@/lib/api/admin-secret";
+import { guardRateLimit } from "@/lib/api/rate-limit";
 import { writeLog } from "@/lib/data/logs";
 
 /**
@@ -27,6 +28,10 @@ export async function POST(request: Request): Promise<Response> {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // Scraping is expensive (live Oxylabs fetches) — allow at most 5 runs/minute.
+  const rateLimitResponse = guardRateLimit(request, { limit: 5, windowMs: 60_000 });
+  if (rateLimitResponse) return rateLimitResponse;
 
   let body: ScrapeBody = {};
   try {

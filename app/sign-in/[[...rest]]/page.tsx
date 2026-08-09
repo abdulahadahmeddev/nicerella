@@ -26,7 +26,10 @@ export default function SignInPage() {
           routing="path"
           path="/sign-in"
           signUpUrl="/sign-up"
-          forceRedirectUrl="/"
+          // No forceRedirectUrl — that would override Clerk's `redirect_url`
+          // query param (pricing-card.tsx sends `?redirect_url=/pricing` so a
+          // signed-out user returns to the plan they clicked). fallbackRedirectUrl
+          // is the default when no redirect_url param is present.
           fallbackRedirectUrl="/"
         />
 

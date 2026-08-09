@@ -117,6 +117,18 @@ async function scrapeOneSource(
   let listingHtml: string;
   if (preFetched) {
     listingHtml = preFetched;
+  } else if (options.listingHtmlBySource) {
+    // Scheduler/cron mode with no done-job HTML for this source: skip it.
+    // Section 18 says scheduled results must come from Oxylabs job HTML —
+    // never fall back to a live listing fetch here (that would silently bill
+    // a live scrape for a job that produced nothing).
+    const reason = "no scheduled listing HTML";
+    summary.source_errors[sourceName] = reason;
+    await writeLog("error", "pipeline/scrape", `skipping source: ${sourceName}`, {
+      source_id: sourceId,
+      reason,
+    });
+    return;
   } else {
     await writeLog("info", "pipeline/scrape", `fetching listing: ${listingUrl}`, {
       source_id: sourceId,

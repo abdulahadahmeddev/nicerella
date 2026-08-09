@@ -1,9 +1,11 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 
 import { processScheduledResults } from "@/lib/pipeline/process-scheduled";
 import { runAnalysisPipeline } from "@/lib/pipeline/analyze";
 import { writeLog } from "@/lib/data/logs";
+import { PRODUCTS_CACHE_TAG } from "@/lib/api/products";
 
 /**
  * Automatic pipeline cron route (AGENTS.md section 18). Vercel Cron fires
@@ -53,6 +55,11 @@ export async function GET(request: Request): Promise<Response> {
       message: analyzedError,
     });
   }
+
+  // Bust the public-products cache so newly scraped/analyzed products show up
+  // on the home grid and detail pages without waiting out the 5-minute TTL.
+  // profile "max" = stale-while-revalidate (Next 16 requires the second arg).
+  revalidateTag(PRODUCTS_CACHE_TAG, "max");
 
   const status =
     processedError == null && analyzedError == null

@@ -361,6 +361,7 @@ export interface Database {
           match_category: string | null;
           match_threshold?: number;
           match_count?: number;
+          exclude_product_id?: string;
         };
         Returns: Array<{
           id: string;

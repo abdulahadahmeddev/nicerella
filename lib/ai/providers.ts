@@ -6,6 +6,7 @@ import { createGroq } from "@ai-sdk/groq";
 import { createCerebras } from "@ai-sdk/cerebras";
 import { createMistral } from "@ai-sdk/mistral";
 import { createHuggingFace } from "@ai-sdk/huggingface";
+import { writeLog } from "@/lib/data/logs";
 
 /**
  * Multi-provider free-tier AI registry with failover (AGENTS.md section 19 /
@@ -38,8 +39,17 @@ export function availableAnalysisProviders(): AnalysisProvider[] {
     try {
       providers.push({ name, model: factory() });
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
       // A misconfigured provider should not take down the whole registry.
-      console.error(`[ai/providers] failed to build ${name} provider:`, error);
+      // Persist the failure to the logs table; fall back to console so the
+      // detail still surfaces even if the DB write is unavailable.
+      try {
+        void writeLog("error", "ai/providers", `failed to build ${name} provider`, {
+          message,
+        });
+      } catch {
+        console.error(`[ai/providers] failed to build ${name} provider:`, error);
+      }
     }
   };
 

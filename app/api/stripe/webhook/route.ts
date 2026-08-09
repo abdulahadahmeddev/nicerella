@@ -17,8 +17,40 @@ import { captureServerEvent } from "@/lib/posthog/server";
  */
 export const dynamic = "force-dynamic";
 
+/**
+ * Read the request body with a hard byte cap so an oversized payload cannot
+ * exhaust memory. Stripe webhook bodies are at most a few hundred KB; anything
+ * over the cap is rejected before it is fully buffered.
+ */
+const MAX_WEBHOOK_BYTES = 1_000_000;
+
+async function readBodyLimited(request: Request): Promise<string> {
+  const reader = request.body?.getReader();
+  if (!reader) return "";
+  const decoder = new TextDecoder();
+  let payload = "";
+  let size = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > MAX_WEBHOOK_BYTES) throw new Error("payload too large");
+    payload += decoder.decode(value, { stream: true });
+  }
+  return payload;
+}
+
 export async function POST(request: Request): Promise<Response> {
-  const payload = await request.text();
+  let payload: string;
+  try {
+    payload = await readBodyLimited(request);
+  } catch {
+    return NextResponse.json(
+      { error: "Request body too large or unreadable" },
+      { status: 413 },
+    );
+  }
+
   const signature = request.headers.get("stripe-signature");
   const { webhookSecret } = stripeEnv();
 
@@ -26,7 +58,9 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json(
       {
         error:
-          "STRIPE_WEBHOOK_SECRET is not configured. Set it in .env.local (run `stripe listen --forward-to localhost:3000/api/stripe/webhook` locally) and restart the dev server.",
+          process.env.NODE_ENV === "production"
+            ? "Webhook not configured."
+            : "STRIPE_WEBHOOK_SECRET is not configured. Set it in .env.local (run `stripe listen --forward-to localhost:3000/api/stripe/webhook` locally) and restart the dev server.",
       },
       { status: 500 },
     );
@@ -47,7 +81,7 @@ export async function POST(request: Request): Promise<Response> {
     const result = await handleStripeEvent(event);
     await writeLog("info", "stripe/webhook", `handled ${event.type}`, result);
     // PostHog telemetry for billing lifecycle (fire-and-forget, never blocks).
-    await captureServerEvent(`stripe_${event.type.replaceAll(".", "_")}`, {
+    captureServerEvent(`stripe_${event.type.replaceAll(".", "_")}`, {
       distinctId: result.userId ?? "unknown",
       plan: result.plan,
       customerId: result.customerId,

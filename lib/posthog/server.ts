@@ -24,8 +24,12 @@ export function getPostHogServer(): PostHog | null {
 /**
  * Fire-and-forget server event capture. Safe to call anywhere — no-ops when
  * PostHog is not configured, and never throws on network failure.
+ *
+ * Deliberately NOT awaited: `flushAt: 1` already sends the event immediately
+ * on capture(), so the follow-up flush is only belt-and-suspenders. Awaiting
+ * it in a request path would block the response on PostHog's HTTP latency.
  */
-export async function captureServerEvent(
+export function captureServerEvent(
   event: string,
   properties: Record<string, unknown> = {},
 ) {
@@ -38,7 +42,7 @@ export async function captureServerEvent(
 
   try {
     ph.capture({ distinctId, event, properties: rest });
-    await ph.flush();
+    void ph.flush();
   } catch {
     // Analytics must never take down a request.
   }

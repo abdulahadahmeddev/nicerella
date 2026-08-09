@@ -27,8 +27,32 @@ export async function generateMetadata({
 }: ProductDetailsPageProps): Promise<Metadata> {
   const { id } = await params;
   const product = await getProduct(id);
+  if (!product) {
+    return {
+      title: "Product not found — Nicerella",
+      robots: { index: false, follow: true },
+    };
+  }
+  const trustPct = Math.round(product.trustScore * 100);
+  const description =
+    product.analysis?.neutralSummary?.slice(0, 155) ??
+    `${product.title} — AI-assessed trust score of ${trustPct}% based on ${product.reviewCount} reviews.`;
+  const images = product.imageUrl ? [{ url: product.imageUrl, alt: product.title }] : undefined;
   return {
-    title: product ? `${product.title} — Nicerella` : "Product not found — Nicerella",
+    title: `${product.title} — Nicerella`,
+    description,
+    openGraph: {
+      title: `${product.title} — Nicerella trust score`,
+      description,
+      images,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.title} — Nicerella trust score`,
+      description,
+      images,
+    },
   };
 }
 

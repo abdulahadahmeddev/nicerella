@@ -40,6 +40,9 @@ create table if not exists public.reviews (
 );
 create unique index if not exists reviews_product_identifier_unique on public.reviews (product_id, review_identifier);
 
+-- Enable pgvector extension for similarity search (AGENTS.md section 20)
+create extension if not exists vector;
+
 create table if not exists public.product_trust_analyses (
   id                      uuid primary key default gen_random_uuid(),
   product_id              uuid not null unique references public.products(id) on delete cascade,
@@ -54,9 +57,66 @@ create table if not exists public.product_trust_analyses (
   neutral_summary         text not null,
   disclaimer              text,
   model_name              text,
+  embedding               vector(1536),  -- pgvector for similar products (section 20)
   created_at              timestamptz not null default now(),
   constraint product_trust_analyses_sentiment_sum_check check (positive_pct + neutral_pct + negative_pct = 100)
 );
+
+-- Index for pgvector similarity queries
+create index if not exists product_trust_analyses_embedding_idx on public.product_trust_analyses using ivfflat (embedding vector_cosine_ops) with (lists = 100);
+
+-- Indexes on foreign key columns (performance critical for JOINs and cascading deletes)
+create index if not exists products_source_id_idx on public.products (source_id);
+create index if not exists reviews_product_id_idx on public.reviews (product_id);
+create index if not exists product_trust_analyses_product_id_idx on public.product_trust_analyses (product_id);
+create index if not exists oxylabs_schedules_source_id_idx on public.oxylabs_schedules (source_id);
+create index if not exists oxylabs_schedule_runs_schedule_id_idx on public.oxylabs_schedule_runs (schedule_id);
+
+-- pgvector similarity search RPC function (AGENTS.md section 20)
+-- Finds similar products by cosine similarity on the embedding vector.
+-- `exclude_product_id` keeps the product itself out of its own results.
+create or replace function public.match_similar_products(
+  query_embedding vector(1536),
+  match_category text default null,
+  match_threshold float default 0.5,
+  match_count int default 5,
+  exclude_product_id uuid default null
+)
+returns table (
+  id uuid,
+  title text,
+  image_url text,
+  price numeric(10,2),
+  category text,
+  original_url text,
+  source_id uuid,
+  trust_score numeric,
+  trust_label text,
+  similarity float
+)
+language sql
+stable
+as $$
+  select
+    p.id,
+    p.title,
+    p.image_url,
+    p.price,
+    p.category,
+    p.original_url,
+    p.source_id,
+    a.trust_score,
+    a.trust_label,
+    1 - (a.embedding <=> query_embedding) as similarity
+  from public.product_trust_analyses a
+  join public.products p on p.id = a.product_id
+  where a.embedding is not null
+    and (match_category is null or p.category = match_category)
+    and (exclude_product_id is null or p.id <> exclude_product_id)
+    and (1 - (a.embedding <=> query_embedding)) >= match_threshold
+  order by a.embedding <=> query_embedding
+  limit match_count;
+$$;
 
 create table if not exists public.logs (
   id         bigint generated always as identity primary key,

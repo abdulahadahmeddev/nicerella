@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 
 import { runAnalysisPipeline } from "@/lib/pipeline/analyze";
 import { isAdminRequest } from "@/lib/api/admin-secret";
+import { guardRateLimit } from "@/lib/api/rate-limit";
 import { writeLog } from "@/lib/data/logs";
 import { captureServerEvent } from "@/lib/posthog/server";
+import { PRODUCTS_CACHE_TAG } from "@/lib/api/products";
 
 /**
  * Manual AI trust analysis route (AGENTS.md section 19). Picks up products
@@ -18,6 +21,10 @@ export async function POST(request: Request): Promise<Response> {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // AI calls are paid per token — bound how often analysis can be triggered.
+  const rateLimitResponse = guardRateLimit(request, { limit: 10, windowMs: 60_000 });
+  if (rateLimitResponse) return rateLimitResponse;
 
   let limit: number | undefined;
   try {
@@ -35,7 +42,11 @@ export async function POST(request: Request): Promise<Response> {
 
   try {
     const summary = await runAnalysisPipeline({ limit });
-    await captureServerEvent("analysis_pipeline_completed", {
+    // Newly analyzed products must appear on the home grid and detail pages
+    // immediately — don't wait out the 5-minute products cache TTL. profile
+    // "max" = stale-while-revalidate (Next 16 requires the second argument).
+    revalidateTag(PRODUCTS_CACHE_TAG, "max");
+    captureServerEvent("analysis_pipeline_completed", {
       status: summary.status,
       analyzed: summary.products_analyzed,
       failed: summary.products_failed,

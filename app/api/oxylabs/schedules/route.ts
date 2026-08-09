@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { listSchedules } from "@/lib/data/schedules";
 import { isAdminRequest } from "@/lib/api/admin-secret";
+import { guardRateLimit } from "@/lib/api/rate-limit";
 import { writeLog } from "@/lib/data/logs";
 import {
   syncOxylabsSchedules,
@@ -42,6 +43,10 @@ export async function POST(request: Request): Promise<Response> {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // Schedule sync creates/deactivates billable Oxylabs schedules — throttle it.
+  const rateLimitResponse = guardRateLimit(request, { limit: 10, windowMs: 60_000 });
+  if (rateLimitResponse) return rateLimitResponse;
 
   let body: SyncBody = {};
   try {

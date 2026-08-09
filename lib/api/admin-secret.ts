@@ -13,14 +13,20 @@ import { timingSafeEqual } from "node:crypto";
  * leading bytes of the header match the real secret. The secret is never
  * logged or returned.
  */
+/**
+ * Cached at module load: the admin secret is fixed at boot and never changes
+ * for the lifetime of a serverless instance, so a per-request read (and the
+ * env lookup it implies) is wasted work.
+ */
+const cachedSecret = process.env.NICERELLA_ADMIN_SECRET;
+
 function adminSecret(): string {
-  const secret = process.env.NICERELLA_ADMIN_SECRET;
-  if (!secret || secret.length === 0) {
+  if (!cachedSecret || cachedSecret.length === 0) {
     throw new Error(
       'Missing required environment variable "NICERELLA_ADMIN_SECRET". Add it to .env.local and restart the dev server.',
     );
   }
-  return secret;
+  return cachedSecret;
 }
 
 /** True when the request carries the correct admin secret header. */

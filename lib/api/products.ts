@@ -1,5 +1,7 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
+
 import { getProductById, listAnalyzedProducts } from "@/lib/data/products";
 import { getAnalysisByProduct } from "@/lib/data/analyses";
 import { countReviewsByProduct } from "@/lib/data/reviews";
@@ -19,21 +21,40 @@ import type {
  * round-trip to the app's own routes — a relative fetch URL cannot be parsed
  * during server rendering). The thin `/api/products` GET routes delegate to
  * these same functions for any client-side callers.
+ *
+ * The reads are wrapped in `unstable_cache` (Next 16) with a 5-minute TTL and
+ * the `products` tag. The pipeline calls `revalidateTag("products")` after a
+ * scrape/analyze run so fresh data appears without waiting for the TTL, while
+ * every page view in between avoids a Supabase round-trip. Per-arg keys
+ * (`id`) are part of the cache key automatically.
  */
+
+/** Cache-busting tag used by the pipeline after scrape/analyze runs. */
+export const PRODUCTS_CACHE_TAG = "products";
+
+const REVALIDATE_SECONDS = 300;
+
+const getCachedProducts = unstable_cache(
+  async (): Promise<Product[]> => {
+    const rows = await listAnalyzedProducts();
+    return rows.map((r) => ({
+      id: r.id,
+      title: r.title,
+      imageUrl: r.image_url,
+      reviewCount: r.review_count,
+      trustScore: r.trust_score,
+      price: r.price,
+      sourceName: r.source_name ?? undefined,
+      analyzedAt: r.analyzed_at,
+    }));
+  },
+  ["home-products"],
+  { revalidate: REVALIDATE_SECONDS, tags: [PRODUCTS_CACHE_TAG] },
+);
 
 /** Home-grid products: analyzed only, newest first, with trust score. */
 export async function getProducts(): Promise<Product[]> {
-  const rows = await listAnalyzedProducts();
-  return rows.map((r) => ({
-    id: r.id,
-    title: r.title,
-    imageUrl: r.image_url,
-    reviewCount: r.review_count,
-    trustScore: r.trust_score,
-    price: r.price,
-    sourceName: r.source_name ?? undefined,
-    analyzedAt: r.analyzed_at,
-  }));
+  return getCachedProducts();
 }
 
 const UUID_PATTERN =
@@ -53,6 +74,62 @@ function normalizeRedFlags(value: unknown): RedFlag[] {
   return flags;
 }
 
+const getCachedProduct = unstable_cache(
+  async (id: string): Promise<ProductDetail | null> => {
+    const product = await getProductById(id);
+    if (!product) return null;
+
+    const analysisRow = await getAnalysisByProduct(id);
+    if (!analysisRow) return null;
+
+    const [counts, source, similarRows] = await Promise.all([
+      countReviewsByProduct([id]),
+      getSourceById(product.source_id),
+      findSimilarProducts(id, product.category),
+    ]);
+
+    const similarCounts = await countReviewsByProduct(similarRows.map((s) => s.id));
+    const similarProducts: Product[] = similarRows.map((s) => ({
+      id: s.id,
+      title: s.title,
+      imageUrl: s.image_url,
+      reviewCount: similarCounts.get(s.id) ?? 0,
+      trustScore: s.trust_score,
+      price: s.price,
+    }));
+
+    const analysis: ProductAnalysis = {
+      trustLabel: analysisRow.trust_label,
+      sentiment: {
+        positive: analysisRow.positive_pct,
+        neutral: analysisRow.neutral_pct,
+        negative: analysisRow.negative_pct,
+      },
+      fakeReviewPercentage: analysisRow.fake_review_pct,
+      authenticityConfidence: analysisRow.authenticity_confidence,
+      redFlags: normalizeRedFlags(analysisRow.red_flags),
+      neutralSummary: analysisRow.neutral_summary,
+      disclaimer: analysisRow.disclaimer ?? undefined,
+      modelName: analysisRow.model_name ?? undefined,
+    };
+
+    return {
+      id: product.id,
+      title: product.title,
+      imageUrl: product.image_url,
+      reviewCount: counts.get(id) ?? 0,
+      trustScore: analysisRow.trust_score,
+      price: product.price,
+      sourceName: source?.name ?? undefined,
+      analyzedAt: product.analyzed_at,
+      analysis,
+      similarProducts,
+    };
+  },
+  ["product-detail"],
+  { revalidate: REVALIDATE_SECONDS, tags: [PRODUCTS_CACHE_TAG] },
+);
+
 /**
  * Product detail: the product, its trust analysis, review count, source name,
  * and pgvector similar products (section 20). Returns null for unknown,
@@ -60,54 +137,5 @@ function normalizeRedFlags(value: unknown): RedFlag[] {
  */
 export async function getProduct(id: string): Promise<ProductDetail | null> {
   if (!UUID_PATTERN.test(id)) return null;
-
-  const product = await getProductById(id);
-  if (!product) return null;
-
-  const analysisRow = await getAnalysisByProduct(id);
-  if (!analysisRow) return null;
-
-  const [counts, source, similarRows] = await Promise.all([
-    countReviewsByProduct([id]),
-    getSourceById(product.source_id),
-    findSimilarProducts(id, product.category),
-  ]);
-
-  const similarCounts = await countReviewsByProduct(similarRows.map((s) => s.id));
-  const similarProducts: Product[] = similarRows.map((s) => ({
-    id: s.id,
-    title: s.title,
-    imageUrl: s.image_url,
-    reviewCount: similarCounts.get(s.id) ?? 0,
-    trustScore: s.trust_score,
-    price: s.price,
-  }));
-
-  const analysis: ProductAnalysis = {
-    trustLabel: analysisRow.trust_label,
-    sentiment: {
-      positive: analysisRow.positive_pct,
-      neutral: analysisRow.neutral_pct,
-      negative: analysisRow.negative_pct,
-    },
-    fakeReviewPercentage: analysisRow.fake_review_pct,
-    authenticityConfidence: analysisRow.authenticity_confidence,
-    redFlags: normalizeRedFlags(analysisRow.red_flags),
-    neutralSummary: analysisRow.neutral_summary,
-    disclaimer: analysisRow.disclaimer ?? undefined,
-    modelName: analysisRow.model_name ?? undefined,
-  };
-
-  return {
-    id: product.id,
-    title: product.title,
-    imageUrl: product.image_url,
-    reviewCount: counts.get(id) ?? 0,
-    trustScore: analysisRow.trust_score,
-    price: product.price,
-    sourceName: source?.name ?? undefined,
-    analyzedAt: product.analyzed_at,
-    analysis,
-    similarProducts,
-  };
+  return getCachedProduct(id);
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { listSources } from "@/lib/data/sources";
 import { isAdminRequest } from "@/lib/api/admin-secret";
+import { guardRateLimit } from "@/lib/api/rate-limit";
 import { writeLog } from "@/lib/data/logs";
 
 /**
@@ -14,6 +15,10 @@ export async function GET(request: Request): Promise<Response> {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // Operational read route — default 60 req/min per client is plenty.
+  const rateLimitResponse = guardRateLimit(request);
+  if (rateLimitResponse) return rateLimitResponse;
 
   try {
     const sources = await listSources();

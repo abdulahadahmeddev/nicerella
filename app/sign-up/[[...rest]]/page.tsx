@@ -26,7 +26,8 @@ export default function SignUpPage() {
           routing="path"
           path="/sign-up"
           signInUrl="/sign-in"
-          forceRedirectUrl="/"
+          // No forceRedirectUrl — it would override the `redirect_url` query
+          // param; fallbackRedirectUrl handles the no-param default instead.
           fallbackRedirectUrl="/"
         />
 

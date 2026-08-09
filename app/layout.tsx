@@ -53,9 +53,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       afterSignOutUrl="/"
       signInFallbackRedirectUrl="/"
       signUpFallbackRedirectUrl="/"
-      // @ts-expect-error — internal Clerk escape hatch to stop router.refresh() after
-      // auth state changes, which broke sign-in/sign-out redirects (see AGENTS.md §auth).
-      // Supported at runtime (ClerkProvider.js destructures it); stripped from the public type.
+      // @ts-expect-error — internal Clerk escape hatch to stop router.refresh()
+      // after auth state changes, which broke sign-in/sign-out redirects. Verified
+      // against @clerk/nextjs 7.7.0: the prop only suppresses router.refresh() in
+      // __internal_onAfterSetActive; auth flows still work because onBeforeSetActive
+      // invalidates the Router Cache and the redirect performs a full re-render.
+      // Stripped from the public type — the @ts-expect-error above fails loudly if
+      // Clerk ever exposes it. RE-VERIFY sign-in/sign-out redirects after every
+      // @clerk/nextjs upgrade; remove this once the upstream race is fixed.
       __internal_invokeMiddlewareOnAuthStateChange={false}
     >
       <html lang="en" className={`${inter.variable} h-full antialiased`}>

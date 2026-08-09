@@ -1,0 +1,60 @@
+- generic [ref=f4e1]:
+  - banner [ref=f4e2]:
+    - generic [ref=f4e3]:
+      - generic [ref=f4e4]:
+        - link "Nicerella — home" [ref=f4e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f4e9]: nicerella
+        - navigation "Primary" [ref=f4e10]:
+          - link "Products" [ref=f4e11] [cursor=pointer]:
+            - /url: /
+          - link "Pricing" [ref=f4e12] [cursor=pointer]:
+            - /url: /pricing
+          - link "Articles" [ref=f4e13] [cursor=pointer]:
+            - /url: /articles
+      - link "Sign in" [ref=f4e90] [cursor=pointer]:
+        - /url: /sign-in
+  - main [ref=f4e14]:
+    - generic [ref=f4e15]:
+      - heading "Find products you can actually trust" [level=1] [ref=f4e16]
+      - paragraph [ref=f4e17]: Nicerella uses AI to detect fake, bot-written, and incentivized reviews — so every score reflects genuine customer experience.
+      - search [ref=f4e19]:
+        - generic [ref=f4e20]: Search products
+        - searchbox "Search products" [active] [ref=f4e21]: soundcore
+    - generic [ref=f4e22]:
+      - generic [ref=f4e23]:
+        - heading "Analyzed products" [level=2] [ref=f4e24]
+        - generic [ref=f4e25]: 3 products
+      - generic [ref=f4e26]:
+        - 'link "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics — trust highly trustworthy" [ref=f4e28] [cursor=pointer]':
+          - /url: /products/94aaf9fd-0790-42b5-ad6d-9c1bcb8c7302
+          - generic [ref=f4e29]:
+            - 'img "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [ref=f4e30]'
+            - generic [ref=f4e31]: 92%
+          - generic [ref=f4e35]:
+            - 'heading "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [level=3] [ref=f4e36]'
+            - generic [ref=f4e37]:
+              - generic [ref=f4e38]: 4 reviews
+              - generic [ref=f4e41]: Trust
+        - 'link "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, White | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics — trust highly trustworthy" [ref=f4e45] [cursor=pointer]':
+          - /url: /products/66a81491-e229-47c8-980b-88442a3064ac
+          - generic [ref=f4e46]:
+            - 'img "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, White | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [ref=f4e47]'
+            - generic [ref=f4e48]: 95%
+          - generic [ref=f4e52]:
+            - 'heading "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, White | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [level=3] [ref=f4e53]'
+            - generic [ref=f4e54]:
+              - generic [ref=f4e55]: 4 reviews
+              - generic [ref=f4e58]: Trust
+        - 'link "Amazon.com: Hybrid Active Noise Cancelling Bluetooth Headphones Wireless Headphones | Over Ear, 120H Playtime, Hi-Res Audio, Deep Bass, Memory Foam Ear Cups for Home Office Travel Black : Electronics — trust suspicious" [ref=f4e62] [cursor=pointer]':
+          - /url: /products/f22d678e-6ce5-4d20-9cdb-78944984d4a2
+          - generic [ref=f4e63]:
+            - 'img "Amazon.com: Hybrid Active Noise Cancelling Bluetooth Headphones Wireless Headphones | Over Ear, 120H Playtime, Hi-Res Audio, Deep Bass, Memory Foam Ear Cups for Home Office Travel Black : Electronics" [ref=f4e64]'
+            - generic [ref=f4e65]: 35%
+          - generic [ref=f4e69]:
+            - 'heading "Amazon.com: Hybrid Active Noise Cancelling Bluetooth Headphones Wireless Headphones | Over Ear, 120H Playtime, Hi-Res Audio, Deep Bass, Memory Foam Ear Cups for Home Office Travel Black : Electronics" [level=3] [ref=f4e70]'
+            - generic [ref=f4e71]:
+              - generic [ref=f4e72]: 4 reviews
+              - generic [ref=f4e75]: Trust
+  - button "Open Next.js Dev Tools" [ref=f4e84] [cursor=pointer]
+  - alert [ref=f4e88]

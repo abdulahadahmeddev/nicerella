@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { processScheduledResults } from "@/lib/pipeline/process-scheduled";
 import { isAdminRequest } from "@/lib/api/admin-secret";
+import { guardRateLimit } from "@/lib/api/rate-limit";
 import { writeLog } from "@/lib/data/logs";
 
 /**
@@ -17,6 +18,10 @@ export async function POST(request: Request): Promise<Response> {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // Processing consumes Oxylabs job results — throttle to avoid redundant runs.
+  const rateLimitResponse = guardRateLimit(request, { limit: 10, windowMs: 60_000 });
+  if (rateLimitResponse) return rateLimitResponse;
 
   try {
     const result = await processScheduledResults();

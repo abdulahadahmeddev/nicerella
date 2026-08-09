@@ -4,6 +4,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { createCheckoutSession } from "@/lib/stripe/server";
 import { stripeConfigured } from "@/lib/stripe/env";
 import { getPlan, type BillingInterval, type PlanId } from "@/lib/stripe/plans";
+import { isSameSiteRequest } from "@/lib/api/origin";
+import { guardRateLimit } from "@/lib/api/rate-limit";
+import { writeLog } from "@/lib/data/logs";
 
 /**
  * Start a Stripe Checkout Session (POST, Clerk-authenticated). Body:
@@ -19,6 +22,15 @@ const PLAN_IDS = new Set<PlanId>(["free", "pro", "enterprise"]);
 const INTERVALS = new Set<BillingInterval>(["monthly", "yearly"]);
 
 export async function POST(request: Request): Promise<Response> {
+  // Reject cross-site forgeries first (cheap 403, does not consume the
+  // rate-limit budget), then throttle same-site session creation.
+  if (!isSameSiteRequest(request)) {
+    return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  }
+
+  const rateLimitResponse = guardRateLimit(request, { limit: 20, windowMs: 60_000 });
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized — sign in to continue" }, { status: 401 });
@@ -72,8 +84,18 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ url });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+    // Log the detail server-side; keep the client response generic so Stripe
+    // internals never leak to the browser.
+    await writeLog("error", "api/stripe/checkout", "checkout session creation failed", {
+      message,
+    });
     return NextResponse.json(
-      { error: `Checkout failed: ${message}` },
+      {
+        error:
+          process.env.NODE_ENV === "production"
+            ? "Checkout failed. Please try again."
+            : `Checkout failed: ${message}`,
+      },
       { status: 500 },
     );
   }
