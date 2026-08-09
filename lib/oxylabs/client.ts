@@ -1,5 +1,7 @@
 import "server-only";
 
+import { requireEnv } from "@/lib/env";
+
 /**
  * Oxylabs Web Scraper API client (AGENTS.md section 9 / skill `web-scraper-api`).
  *
@@ -97,13 +99,9 @@ function extractAsinFromUrl(url: string): string {
 }
 
 function oxyCredentials(): { username: string; password: string } {
-  const username = process.env.OXY_WSA_USERNAME;
-  const password = process.env.OXY_WSA_PASSWORD;
-  if (!username || !password) {
-    throw new Error(
-      'Missing required environment variables "OXY_WSA_USERNAME"/"OXY_WSA_PASSWORD". Add them to .env.local and restart the dev server.',
-    );
-  }
+  // Shared requireEnv throws with a consistent message when either is missing.
+  const username = requireEnv("OXY_WSA_USERNAME");
+  const password = requireEnv("OXY_WSA_PASSWORD");
   return { username, password };
 }
 

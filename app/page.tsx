@@ -12,7 +12,15 @@ import { ProductCatalog } from "@/components/home/product-catalog";
 export const revalidate = 300;
 
 export default async function Home() {
-  const products = await getProducts();
+  // A fresh DB (or a brief Supabase outage) must not break the build or the
+  // page: degrade to an empty grid so the hero still renders, and let the
+  // unstable_cache revalidate when the DB is reachable again.
+  let products: Awaited<ReturnType<typeof getProducts>> = [];
+  try {
+    products = await getProducts();
+  } catch {
+    products = [];
+  }
 
   return (
     <>

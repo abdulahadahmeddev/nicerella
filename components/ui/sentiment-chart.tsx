@@ -2,12 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-
-interface SentimentBreakdown {
-  positive: number;
-  neutral: number;
-  negative: number;
-}
+import type { SentimentBreakdown } from "@/lib/types/product";
 
 interface SentimentChartProps {
   breakdown: SentimentBreakdown;

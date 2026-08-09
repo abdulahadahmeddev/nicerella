@@ -72,11 +72,6 @@ export function getTrustLabel(score: number): TrustLabel {
   return "likely manipulated";
 }
 
-/** Map a trust score (0–1) to its color CSS variable. */
-export function getTrustColor(score: number): string {
-  return TRUST_CONFIG[getTrustLabel(score)].color;
-}
-
 /**
  * Look up a trust config by label string (from stored data). Falls back to
  * "mixed" for unknown labels so the UI never renders unstyled.
@@ -89,12 +84,3 @@ export function getTrustConfig(label: string): TrustConfig {
 export function isTrustLabel(v: string): v is TrustLabel {
   return (TRUST_LABELS as readonly string[]).includes(v);
 }
-
-/** Short, human-readable message per label (Quick Reference in DESIGN_SYSTEM.md). */
-export const TRUST_MESSAGES: Record<TrustLabel, string> = {
-  "highly trustworthy": "Excellent authenticity. Reviews appear genuine.",
-  "mostly trustworthy": "Good authenticity with minor concerns.",
-  mixed: "Mixed signals. Some reviews show unusual patterns.",
-  suspicious: "Multiple red flags detected. Exercise caution.",
-  "likely manipulated": "Strong evidence of manipulation.",
-};

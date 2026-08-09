@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 
+import { requireEnv } from "@/lib/env";
 import {
   FREE_TRIAL_DAYS,
   PRICE_LOOKUP_KEYS,
@@ -31,13 +32,11 @@ let cachedStripe: Stripe | null = null;
 
 export function getStripe(): Stripe {
   if (cachedStripe) return cachedStripe;
+  // Uses the shared requireEnv for a consistent error message (throws when
+  // missing) — secretKey is guaranteed non-null afterwards.
+  requireEnv("STRIPE_SECRET_KEY", "(Stripe test key)");
   const { secretKey } = stripeEnv();
-  if (!secretKey) {
-    throw new Error(
-      'Missing required environment variable "STRIPE_SECRET_KEY" (Stripe test key). Add it to .env.local and restart the dev server.',
-    );
-  }
-  cachedStripe = new Stripe(secretKey, {
+  cachedStripe = new Stripe(secretKey!, {
     apiVersion: "2026-07-29.dahlia",
     typescript: true,
   });

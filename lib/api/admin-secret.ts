@@ -1,5 +1,6 @@
 import "server-only";
 import { timingSafeEqual } from "node:crypto";
+import { requireEnv } from "@/lib/env";
 
 /**
  * Admin secret validation (AGENTS.md section 15).
@@ -22,9 +23,8 @@ const cachedSecret = process.env.NICERELLA_ADMIN_SECRET;
 
 function adminSecret(): string {
   if (!cachedSecret || cachedSecret.length === 0) {
-    throw new Error(
-      'Missing required environment variable "NICERELLA_ADMIN_SECRET". Add it to .env.local and restart the dev server.',
-    );
+    // Reuses the shared message shape via requireEnv (throws).
+    return requireEnv("NICERELLA_ADMIN_SECRET");
   }
   return cachedSecret;
 }

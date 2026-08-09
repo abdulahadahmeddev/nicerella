@@ -5,23 +5,18 @@ import { z } from "zod";
 
 import type { AnalysisProvider } from "./providers";
 import type { ReviewForAnalysis } from "@/lib/data/reviews-read";
+import { TRUST_LABELS } from "@/lib/design-tokens";
 
 /**
  * Trust analysis generation (AGENTS.md section 19). Every provider output is
  * validated with the zod schema below before insert; percentages must sum to
  * exactly 100 (rounded programmatically by the pipeline before insert to
  * satisfy the DB CHECK constraint).
+ *
+ * TRUST_LABELS is imported from lib/design-tokens (single source of truth for
+ * the five labels shared with the UI) so the zod enum can never drift from the
+ * design system.
  */
-
-export const TRUST_LABELS = [
-  "highly trustworthy",
-  "mostly trustworthy",
-  "mixed",
-  "suspicious",
-  "likely manipulated",
-] as const;
-
-export type TrustLabel = (typeof TRUST_LABELS)[number];
 
 export const trustAnalysisSchema = z.object({
   trust_score: z.number().min(0).max(1),

@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 
-import { listAnalyzedProducts } from "@/lib/data/products";
 import { ARTICLES } from "@/lib/data/articles";
 import { siteUrl } from "@/lib/site";
 
@@ -10,13 +9,23 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = siteUrl();
 
-  const products = await listAnalyzedProducts();
-  const productUrls = products.map((p) => ({
-    url: `${origin}/products/${p.id}`,
-    lastModified: p.analyzed_at ?? new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
-  }));
+  // The sitemap must not break the build (or a deploy) when Supabase is not
+  // configured yet. `listAnalyzedProducts` imports the service-role client,
+  // whose env module throws at import time when the env vars are absent — so
+  // load it dynamically here and degrade to no product URLs on any failure.
+  let productUrls: MetadataRoute.Sitemap = [];
+  try {
+    const { listAnalyzedProducts } = await import("@/lib/data/products");
+    const products = await listAnalyzedProducts();
+    productUrls = products.map((p) => ({
+      url: `${origin}/products/${p.id}`,
+      lastModified: p.analyzed_at ?? new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+  } catch {
+    productUrls = [];
+  }
 
   const articleUrls = ARTICLES.map((a) => ({
     url: `${origin}/articles/${a.slug}`,

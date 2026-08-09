@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getProducts } from "@/lib/api/products";
+import { getProducts, PUBLIC_CACHE_HEADER } from "@/lib/api/products";
 import { writeLog } from "@/lib/data/logs";
 
 /**
@@ -14,12 +14,10 @@ import { writeLog } from "@/lib/data/logs";
  */
 export const dynamic = "force-dynamic";
 
-const PUBLIC_CACHE = "public, s-maxage=300, stale-while-revalidate=300";
-
 export async function GET(): Promise<Response> {
   try {
     return NextResponse.json(await getProducts(), {
-      headers: { "Cache-Control": PUBLIC_CACHE },
+      headers: { "Cache-Control": PUBLIC_CACHE_HEADER },
     });
   } catch (error) {
     await writeLog("error", "api/products", "failed to list analyzed products", {

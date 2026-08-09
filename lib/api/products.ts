@@ -34,6 +34,14 @@ export const PRODUCTS_CACHE_TAG = "products";
 
 const REVALIDATE_SECONDS = 300;
 
+/**
+ * Public cache header for the product read routes. Matches the unstable_cache
+ * TTL (300s) so CDN/browser cache the JSON for up to 5 minutes with
+ * stale-while-revalidate.
+ */
+export const PUBLIC_CACHE_HEADER =
+  "public, s-maxage=300, stale-while-revalidate=300";
+
 const getCachedProducts = unstable_cache(
   async (): Promise<Product[]> => {
     const rows = await listAnalyzedProducts();

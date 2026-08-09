@@ -40,4 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env
-.mcp.json
+
+# playwright mcp — dev-time verification logs (not shipped)
+.playwright-mcp

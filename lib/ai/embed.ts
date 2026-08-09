@@ -3,6 +3,8 @@ import "server-only";
 import { embedMany } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
+import { requireEnv } from "@/lib/env";
+
 /**
  * Embedding generation (AGENTS.md section 20). OpenAI is not available (no
  * credit-card providers), so embeddings come from Gemini `gemini-embedding-001`
@@ -42,12 +44,7 @@ function padToDimension(vec: number[], dim: number): number[] {
  * configured — callers degrade the stored embedding, never the analysis.
  */
 export async function embedText(text: string): Promise<number[]> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error(
-      'Missing required environment variable "GEMINI_API_KEY" for embeddings. Add it to .env.local and restart the dev server.',
-    );
-  }
+  const apiKey = requireEnv("GEMINI_API_KEY", "for embeddings");
 
   const google = createGoogleGenerativeAI({ apiKey });
   // `gemini-embedding-001` returns 3072 dims by default; pin the model output
