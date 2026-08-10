@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -44,7 +45,12 @@ export function Header({ actions, className }: HeaderProps) {
             ))}
           </nav>
         </div>
-        {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
+        <div className="flex items-center gap-2">
+          {actions ? (
+            <div className="hidden items-center gap-2 sm:flex">{actions}</div>
+          ) : null}
+          <MobileNav links={NAV_LINKS} actions={actions} />
+        </div>
       </div>
     </header>
   );

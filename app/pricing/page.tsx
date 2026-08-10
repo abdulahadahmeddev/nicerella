@@ -7,6 +7,7 @@ import { PricingGrid } from "@/components/billing/pricing-grid";
 import { ShieldCheckIcon, CheckIcon } from "@/components/ui/icons";
 import { getUserPlan } from "@/lib/data/subscriptions";
 import { stripeConfigured } from "@/lib/stripe/env";
+import { applySubscription, getStripe } from "@/lib/stripe/server";
 
 export const metadata: Metadata = {
   title: "Pricing — Nicerella",
@@ -30,13 +31,41 @@ const FAQS = [
 ];
 
 interface PricingPageProps {
-  searchParams: Promise<{ success?: string; canceled?: string }>;
+  searchParams: Promise<{ success?: string; canceled?: string; session_id?: string }>;
 }
 
 export default async function PricingPage({ searchParams }: PricingPageProps) {
-  const { success, canceled } = await searchParams;
+  const { session_id, canceled } = await searchParams;
   const { userId } = await auth();
-  const plan = await getUserPlan(userId);
+  let plan = await getUserPlan(userId);
+
+  // Secure post-checkout verification (replaces the old fixed ?success=1 flag).
+  // The session id is never trusted from the URL alone — it is re-checked
+  // against Stripe (ownership + complete status) before the plan is mirrored.
+  // The webhook stays the source of truth; if this mirror ever fails, show the
+  // plain pricing page, never a false banner.
+  let welcomeToPro = false;
+  if (session_id && userId) {
+    try {
+      const stripe = getStripe();
+      const session = await stripe.checkout.sessions.retrieve(session_id);
+      const ownsSession =
+        session.metadata?.userId === userId ||
+        session.client_reference_id === userId;
+      if (ownsSession && session.status === "complete" && session.subscription) {
+        await applySubscription(
+          await stripe.subscriptions.retrieve(session.subscription as string),
+        );
+        // Re-read the plan so the success banner (and grid) reflect Pro now.
+        plan = await getUserPlan(userId);
+        welcomeToPro = plan.isPro;
+      }
+    } catch (error) {
+      // Failing the mirror must never break the page — the webhook lands the
+      // real write. Log the error but never the full session id.
+      console.warn("checkout session verification failed", error);
+    }
+  }
 
   return (
     <>
@@ -58,26 +87,15 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           </p>
         </section>
 
-        {/* Success / canceled banners. The success banner must not lie: the
-            Stripe webhook mirrors the subscription into Supabase, and the
-            checkout redirect can land here a moment before that write lands.
-            Show the celebration only once the plan actually reads as Pro;
-            otherwise show an honest "activating" state. */}
-        {success ? (
-          plan.isPro ? (
-            <div className="mx-auto mt-10 max-w-xl rounded-[var(--radius-lg)] border border-[var(--trust-high)] bg-[var(--trust-high)]/10 p-4 text-body-sm text-[var(--color-foreground)]">
-              <span className="font-medium text-[var(--trust-high)]">Welcome to Pro!</span>{" "}
-              Your subscription is active — enjoy unlimited trust analyses.
-            </div>
-          ) : (
-            <div className="mx-auto mt-10 max-w-xl rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4 text-body-sm text-[var(--color-foreground-muted)]">
-              <span className="font-medium text-[var(--color-foreground)]">
-                Subscription activating…
-              </span>{" "}
-              Your plan upgrade is being confirmed by the billing provider. This
-              usually takes a few seconds — refresh to see Pro unlocked.
-            </div>
-          )
+        {/* Success / canceled banners. The success banner shows only after the
+            session_id was verified server-side against Stripe (ownership +
+            complete status) and the plan actually reads as Pro — never from a
+            fixed URL flag. The canceled banner is a harmless redirect echo. */}
+        {welcomeToPro ? (
+          <div className="mx-auto mt-10 max-w-xl rounded-[var(--radius-lg)] border border-[var(--trust-high)] bg-[var(--trust-high)]/10 p-4 text-body-sm text-[var(--color-foreground)]">
+            <span className="font-medium text-[var(--trust-high)]">Welcome to Pro!</span>{" "}
+            Your subscription is active — enjoy unlimited trust analyses.
+          </div>
         ) : null}
         {canceled ? (
           <div className="mx-auto mt-10 max-w-xl rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-4 text-body-sm text-[var(--color-foreground-muted)]">

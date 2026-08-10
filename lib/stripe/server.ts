@@ -173,7 +173,7 @@ export async function createCheckoutSession(
     allow_promotion_codes: true,
     client_reference_id: options.userId,
     metadata: { userId: options.userId, plan: options.plan },
-    success_url: `${options.origin}/pricing?success=1`,
+    success_url: `${options.origin}/pricing?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${options.origin}/pricing?canceled=1`,
   });
 
