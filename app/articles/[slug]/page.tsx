@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 
 import { Header } from "@/components/layout/header";
 import { AuthActions } from "@/components/layout/auth-actions";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { CheckIcon } from "@/components/ui/icons";
+import { PlanCta } from "@/components/billing/plan-cta";
 import { AdSlot } from "@/components/ads/ad-slot";
 import { AD_SLOTS } from "@/lib/ads/env";
+import { getUserPlan } from "@/lib/data/subscriptions";
 import { ARTICLES, getArticle, getRelatedArticles } from "@/lib/data/articles";
 
 interface ArticlePageProps {
@@ -47,6 +49,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   if (!article) notFound();
 
   const related = getRelatedArticles(article.slug);
+  const { userId } = await auth();
+  const plan = await getUserPlan(userId);
 
   return (
     <>
@@ -100,20 +104,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </aside>
           ) : null}
 
-          <section className="card mt-8 flex flex-col items-center p-8 text-center">
-            <h2 className="text-h4 text-[var(--color-foreground)]">
-              Check any product with an AI trust score
-            </h2>
-            <p className="text-body-sm mt-2 max-w-md text-[var(--color-foreground-muted)]">
-              Free trust scores for every shopper. Upgrade for the full sentiment
-              breakdown and red-flag report.
-            </p>
-            <div className="mt-5">
-              <Button href="/pricing" size="lg">
-                Start 14-day free trial
-              </Button>
-            </div>
-          </section>
+          <PlanCta plan={plan} />
         </article>
 
         {related.length > 0 ? (
