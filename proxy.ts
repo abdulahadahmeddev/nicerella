@@ -23,5 +23,9 @@ export const config = {
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run on API routes so Clerk session auth is available there.
     "/(api|trpc)(.*)",
+    // Always run for Clerk-specific frontend API proxy routes. This is what
+    // serves /__clerk/npm/.../clerk.browser.js — without this the .js skip
+    // rule above would 404 Clerk's bundle and auth would never mount.
+    "/__clerk/(.*)",
   ],
 };
