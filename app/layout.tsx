@@ -70,7 +70,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               async
               src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT_ID}`}
               crossOrigin="anonymous"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
           ) : null}
           <PostHogProvider>{children}</PostHogProvider>
