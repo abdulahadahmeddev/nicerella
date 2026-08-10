@@ -1,9 +1,9 @@
 import "server-only";
-import { generateText, type LanguageModelV1 } from "ai";
+import { generateText, type LanguageModel } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createGroq } from "@ai-sdk/groq";
 import { createMistral } from "@ai-sdk/mistral";
-import { requireEnv } from "@/lib/env";
+import { createOpenAI } from "@ai-sdk/openai";
 
 /**
  * Multi-provider AI chat with intelligent failover for Nicerella chat agent.
@@ -16,7 +16,7 @@ import { requireEnv } from "@/lib/env";
 
 interface ChatProvider {
   name: string;
-  model: LanguageModelV1;
+  model: LanguageModel;
   enabled: boolean;
 }
 
@@ -54,7 +54,6 @@ function getChatProviders(): ChatProvider[] {
     const cerebrasKey = process.env.CEREBRAS_API_KEY;
     if (cerebrasKey) {
       // Cerebras uses OpenAI-compatible API
-      const { createOpenAI } = require("@ai-sdk/openai");
       const cerebras = createOpenAI({
         apiKey: cerebrasKey,
         baseURL: "https://api.cerebras.ai/v1",
@@ -154,18 +153,15 @@ export async function generateChatResponse(
   }
 
   const systemPrompt = buildSystemPrompt(context);
-  const fullMessages = [
-    { role: "system" as const, content: systemPrompt },
-    ...messages,
-  ];
 
   // Try each provider in order
   for (const provider of providers) {
     try {
       const result = await generateText({
         model: provider.model,
-        messages: fullMessages,
-        maxTokens: 500, // Keep responses concise
+        instructions: systemPrompt, // Use instructions instead of system messages in messages array
+        messages,
+        maxOutputTokens: 500, // Keep responses concise
         temperature: 0.7, // Balanced creativity
       });
 

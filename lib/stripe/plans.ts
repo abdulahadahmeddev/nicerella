@@ -47,9 +47,8 @@ export const PLANS: Plan[] = [
     highlighted: false,
     features: [
       { label: "Browse analyzed products and trust scores", included: true },
-      { label: "5 detailed trust analyses per month", included: true },
-      { label: "Review sentiment breakdown", included: false },
-      { label: "Similar products & red-flag reports", included: false },
+      { label: "Trust meter on every product page", included: true },
+      { label: "Full sentiment, red-flag & similar-product reports", included: false },
       { label: "Email alerts on new analyses", included: false },
     ],
   },

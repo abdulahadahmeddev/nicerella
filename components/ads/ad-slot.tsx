@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { AD_CLIENT_ID, adsenseConfigured } from "@/lib/ads/env";
+import { AD_CLIENT_ID, adsenseConfigured, isPlaceholderSlot } from "@/lib/ads/env";
 import { cn } from "@/lib/utils";
 
 interface AdSlotProps {
@@ -32,7 +32,7 @@ export function AdSlot({ slot, className, format = "auto" }: AdSlotProps) {
   const pushed = useRef(false);
 
   useEffect(() => {
-    if (!adsenseConfigured()) return;
+    if (!adsenseConfigured() || isPlaceholderSlot(slot)) return;
     if (pushed.current || pushedSlots.has(slot)) return;
     pushed.current = true;
     pushedSlots.add(slot);
@@ -44,7 +44,7 @@ export function AdSlot({ slot, className, format = "auto" }: AdSlotProps) {
     }
   }, [slot]);
 
-  if (!adsenseConfigured()) return null;
+  if (!adsenseConfigured() || isPlaceholderSlot(slot)) return null;
 
   return (
     <div className={cn("ad-slot", className)}>

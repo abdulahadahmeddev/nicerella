@@ -194,7 +194,10 @@ export default async function ProductDetailsPage({
           trustScore: product.trustScore,
           trustLabel: analysis?.trustLabel,
           sentiment: analysis?.sentiment,
-          redFlags: analysis?.redFlags,
+          // ChatContext.redFlags is string[]; send the red-flag descriptions
+          // (not the { type, description } objects) so the AI prompt renders
+          // real red-flag text instead of "[object Object]".
+          redFlags: analysis?.redFlags?.map((f) => f.description),
           reviewCount: product.reviewCount,
           fakePercentage: analysis?.fakeReviewPercentage,
         }}

@@ -9,7 +9,7 @@ import {
   MagnifyingGlassIcon as PhosphorMagnifyingGlass,
   WarningIcon as PhosphorWarning,
   CheckIcon as PhosphorCheck,
-  MessageCircleIcon as PhosphorMessageCircle,
+  ChatCircleIcon as PhosphorChatCircle,
   XIcon as PhosphorX,
   PaperPlaneRightIcon as PhosphorPaperPlaneRight,
   SparkleIcon as PhosphorSparkle,
@@ -58,7 +58,7 @@ export function CheckIcon(props: IconProps) {
 }
 
 export function MessageCircleIcon(props: IconProps) {
-  return <PhosphorMessageCircle {...props} />;
+  return <PhosphorChatCircle {...props} />;
 }
 
 export function XIcon(props: IconProps) {

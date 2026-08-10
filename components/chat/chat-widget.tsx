@@ -64,25 +64,21 @@ function saveChatHistory(messages: Message[], productId?: string) {
 
 export function ChatWidget({ context, isPro = false }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+
+  const productId = context?.productTitle
+    ? context.productTitle.slice(0, 50).replace(/\s+/g, "_")
+    : undefined;
+
+  // Load saved history lazily on first render. The widget remounts per
+  // product-page navigation, so a lazy initializer is equivalent to the old
+  // mount effect but avoids setState-in-effect (react-hooks/set-state-in-effect).
+  const [messages, setMessages] = useState<Message[]>(() => loadChatHistory(productId));
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const productId = context?.productTitle
-    ? context.productTitle.slice(0, 50).replace(/\s+/g, "_")
-    : undefined;
-
-  // Load history on mount
-  useEffect(() => {
-    const history = loadChatHistory(productId);
-    if (history.length > 0) {
-      setMessages(history);
-    }
-  }, [productId]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -183,7 +179,7 @@ export function ChatWidget({ context, isPro = false }: ChatWidgetProps) {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex h-[600px] w-[400px] max-w-[calc(100vw-3rem)] flex-col rounded-[var(--radius-2xl)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl">
+    <div className="fixed bottom-6 right-6 z-50 flex h-[min(600px,calc(100vh-48px))] w-[400px] max-w-[calc(100vw-3rem)] flex-col rounded-[var(--radius-2xl)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-hover)] px-4 py-3 text-white rounded-t-[var(--radius-2xl)]">
         <div className="flex items-center gap-2">
