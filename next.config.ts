@@ -33,6 +33,22 @@ const nextConfig: NextConfig = {
       allowedOrigins: ["localhost:3000", "127.0.0.1:3000", "*.app.github.dev"],
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images-na.ssl-images-amazon.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+      },
+    ],
+  },
   headers: async () => [
     {
       source: "/(.*)",

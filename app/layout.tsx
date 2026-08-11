@@ -7,6 +7,8 @@ import { clerkAppearance } from "@/lib/clerk-appearance";
 import { PostHogProvider } from "@/components/analytics/posthog-provider";
 import { AD_CLIENT_ID, adsenseConfigured } from "@/lib/ads/env";
 import { siteUrl } from "@/lib/site";
+import { Footer } from "@/components/layout/footer";
+import { JsonLd } from "@/components/ui/json-ld";
 import "./globals.css";
 
 const inter = Inter({
@@ -30,7 +32,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Nicerella — Trustworthy product reviews",
     description:
       "AI-powered review authenticity. Detect fake, bot-written, or incentivized reviews and get honest trust scores.",
@@ -73,7 +75,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               strategy="afterInteractive"
             />
           ) : null}
-          <PostHogProvider>{children}</PostHogProvider>
+          <PostHogProvider>
+            <JsonLd
+              data={{
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "Nicerella",
+                url: siteUrl(),
+                description:
+                  "AI-powered review authenticity. Detect fake, bot-written, or incentivized reviews and get honest trust scores.",
+                sameAs: [],
+              }}
+            />
+            {children}
+            <Footer />
+          </PostHogProvider>
         </body>
       </html>
     </ClerkProvider>

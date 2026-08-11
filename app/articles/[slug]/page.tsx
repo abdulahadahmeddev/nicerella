@@ -10,6 +10,9 @@ import { CheckIcon } from "@/components/ui/icons";
 import { AdSlot } from "@/components/ads/ad-slot";
 import { AD_SLOTS } from "@/lib/ads/env";
 import { ARTICLES, getArticle, getRelatedArticles } from "@/lib/data/articles";
+import { siteUrl } from "@/lib/site";
+import { JsonLd } from "@/components/ui/json-ld";
+import { SocialShare } from "@/components/ui/social-share";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -61,7 +64,26 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         />
 
         <article className="mx-auto max-w-2xl">
-          <span className="text-label text-[var(--color-primary)]">{article.tag}</span>
+          <JsonLd
+            data={{
+              "@context": "https://schema.org",
+              "@type": "Article",
+              headline: article.title,
+              description: article.excerpt,
+              datePublished: new Date(`${article.date}T00:00:00Z`).toISOString(),
+              author: { "@type": "Organization", name: "Nicerella" },
+              publisher: { "@type": "Organization", name: "Nicerella" },
+              url: `${siteUrl()}/articles/${article.slug}`,
+            }}
+          />
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-label text-[var(--color-primary)]">{article.tag}</span>
+            <SocialShare
+              title={article.title}
+              url={`${siteUrl()}/articles/${article.slug}`}
+              description={article.excerpt}
+            />
+          </div>
           <h1 className="text-h1 mt-3 text-[var(--color-foreground)]">{article.title}</h1>
           <p className="text-body-sm mt-3 text-[var(--color-foreground-muted)]">
             {formatDate(article.date)} · {article.readingMinutes} min read

@@ -17,6 +17,9 @@ import { AD_SLOTS } from "@/lib/ads/env";
 import { getProduct } from "@/lib/api/products";
 import { getUserPlan } from "@/lib/data/subscriptions";
 import { auth } from "@clerk/nextjs/server";
+import { siteUrl } from "@/lib/site";
+import { JsonLd } from "@/components/ui/json-ld";
+import { SocialShare } from "@/components/ui/social-share";
 
 interface ProductDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -72,6 +75,38 @@ export default async function ProductDetailsPage({
     <>
       <Header actions={<AuthActions />} />
 
+      {analysis && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.title,
+            image: product.imageUrl,
+            url: `${siteUrl()}/products/${product.id}`,
+            description:
+              analysis.neutralSummary?.slice(0, 300) ??
+              `AI trust score: ${Math.round(product.trustScore * 100)}% based on ${product.reviewCount} reviews.`,
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: Math.round(product.trustScore * 5 * 10) / 10,
+              bestRating: 5,
+              worstRating: 0,
+              reviewCount: product.reviewCount,
+            },
+            review: {
+              "@type": "Review",
+              author: { "@type": "Organization", name: "Nicerella AI Analysis" },
+              reviewRating: {
+                "@type": "Rating",
+                ratingValue: Math.round(product.trustScore * 100),
+                bestRating: 100,
+              },
+              reviewBody: analysis.neutralSummary,
+            },
+          }}
+        />
+      )}
+
       <main className="page-container flex-1 py-8 sm:py-12">
         <Breadcrumb
           items={[
@@ -110,6 +145,13 @@ export default async function ProductDetailsPage({
                 {product.sourceName ? ` · ${product.sourceName}` : ""}
                 {product.price != null ? ` · $${product.price.toFixed(2)}` : ""}
               </p>
+              <div className="mt-3">
+                <SocialShare
+                  title={`${product.title} — Nicerella trust score: ${Math.round(product.trustScore * 100)}%`}
+                  url={`${siteUrl()}/products/${product.id}`}
+                  description={`AI trust score: ${Math.round(product.trustScore * 100)}% based on ${product.reviewCount} reviews.`}
+                />
+              </div>
             </div>
 
             {analysis ? (

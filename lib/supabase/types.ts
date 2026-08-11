@@ -352,6 +352,36 @@ export interface Database {
         };
         Relationships: [];
       };
+      email_subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          source: string;
+          verified: boolean;
+          unsubscribed: boolean;
+          subscribed_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          source?: string;
+          verified?: boolean;
+          unsubscribed?: boolean;
+          subscribed_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          source?: string;
+          verified?: boolean;
+          unsubscribed?: boolean;
+          subscribed_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
