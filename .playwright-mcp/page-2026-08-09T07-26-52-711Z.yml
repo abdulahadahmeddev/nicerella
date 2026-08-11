@@ -1,0 +1,97 @@
+- generic [active] [ref=f26e1]:
+  - banner [ref=f26e2]:
+    - generic [ref=f26e4]:
+      - link "Nicerella — home" [ref=f26e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f26e9]: nicerella
+      - navigation "Primary" [ref=f26e10]:
+        - link "Products" [ref=f26e11] [cursor=pointer]:
+          - /url: /
+        - link "Pricing" [ref=f26e12] [cursor=pointer]:
+          - /url: /pricing
+        - link "Articles" [ref=f26e13] [cursor=pointer]:
+          - /url: /articles
+  - main [ref=f26e14]:
+    - generic [ref=f26e15]:
+      - heading "Honest trust scores, fair pricing" [level=1] [ref=f26e19]
+      - paragraph [ref=f26e20]: Start free. Upgrade when you want unlimited analyses, full sentiment breakdowns, and red-flag reports on every product you shop.
+    - generic [ref=f26e22]:
+      - generic [ref=f26e23]:
+        - generic [ref=f26e24]: Monthly
+        - switch "Toggle yearly billing" [ref=f26e25]
+        - generic [ref=f26e27]: Yearly Save ~22%
+      - generic [ref=f26e28]:
+        - generic [ref=f26e29]:
+          - heading "Free" [level=3] [ref=f26e30]
+          - paragraph [ref=f26e31]: Trust scores for everyone
+          - generic [ref=f26e32]: $0
+          - list [ref=f26e34]:
+            - listitem [ref=f26e35]:
+              - generic [ref=f26e38]: Browse analyzed products and trust scores
+            - listitem [ref=f26e39]:
+              - generic [ref=f26e42]: 5 detailed trust analyses per month
+            - listitem [ref=f26e43]:
+              - generic [ref=f26e46]: Review sentiment breakdown
+            - listitem [ref=f26e47]:
+              - generic [ref=f26e50]: Similar products & red-flag reports
+            - listitem [ref=f26e51]:
+              - generic [ref=f26e54]: Email alerts on new analyses
+          - generic [ref=f26e55]:
+            - button "Get started" [ref=f26e56] [cursor=pointer]
+            - paragraph [ref=f26e57]: Your current plan
+        - generic [ref=f26e58]:
+          - generic [ref=f26e59]: Most popular
+          - heading "Pro" [level=3] [ref=f26e60]
+          - paragraph [ref=f26e61]: For serious shoppers
+          - generic [ref=f26e62]:
+            - generic [ref=f26e63]: $9
+            - generic [ref=f26e64]: /mo
+          - paragraph [ref=f26e65]: 14-day free trial. No credit card required.
+          - list [ref=f26e66]:
+            - listitem [ref=f26e67]:
+              - generic [ref=f26e70]: Unlimited detailed trust analyses
+            - listitem [ref=f26e71]:
+              - generic [ref=f26e74]: Full review sentiment breakdown
+            - listitem [ref=f26e75]:
+              - generic [ref=f26e78]: Similar products & red-flag reports
+            - listitem [ref=f26e79]:
+              - generic [ref=f26e82]: Weekly email digests on products you follow
+            - listitem [ref=f26e83]:
+              - generic [ref=f26e86]: Early access to new sources
+          - button "Start free trial" [ref=f26e88] [cursor=pointer]
+        - generic [ref=f26e89]:
+          - heading "Enterprise" [level=3] [ref=f26e90]
+          - paragraph [ref=f26e91]: For teams & researchers
+          - generic [ref=f26e92]:
+            - generic [ref=f26e93]: $49
+            - generic [ref=f26e94]: /mo
+          - paragraph [ref=f26e95]: Custom sources, API access, and dedicated support.
+          - list [ref=f26e96]:
+            - listitem [ref=f26e97]:
+              - generic [ref=f26e100]: Everything in Pro
+            - listitem [ref=f26e101]:
+              - generic [ref=f26e104]: Custom e-commerce sources on request
+            - listitem [ref=f26e105]:
+              - generic [ref=f26e108]: Bulk analysis API access
+            - listitem [ref=f26e109]:
+              - generic [ref=f26e112]: Dedicated support & SLA
+          - button "Contact sales" [ref=f26e114] [cursor=pointer]
+    - generic [ref=f26e115]:
+      - heading "Every plan includes" [level=2] [ref=f26e116]
+      - generic [ref=f26e117]:
+        - generic [ref=f26e118]: AI fake-review detection
+        - generic [ref=f26e122]: Source-transparent scoring
+        - generic [ref=f26e126]: Daily refreshed analyses
+    - generic [ref=f26e130]:
+      - heading "Questions" [level=2] [ref=f26e131]
+      - generic [ref=f26e132]:
+        - generic [ref=f26e133]:
+          - heading "Is there really a free trial without a credit card?" [level=3] [ref=f26e134]
+          - paragraph [ref=f26e135]: Yes. Pro starts with a 14-day free trial and Stripe does not collect a card during checkout. Cancel anytime before the trial ends and you are never charged.
+        - generic [ref=f26e136]:
+          - heading "What counts as a detailed trust analysis?" [level=3] [ref=f26e137]
+          - paragraph [ref=f26e138]: Every product gets a trust score on the home grid for free. Detailed analyses add the sentiment breakdown, estimated fake-review percentage, red-flag report, and similar-products comparisons.
+        - generic [ref=f26e139]:
+          - heading "Can I cancel anytime?" [level=3] [ref=f26e140]
+          - paragraph [ref=f26e141]: Absolutely. Manage billing from the pricing page — cancellation takes effect at the end of your billing period and you keep Pro access until then.
+  - alert [ref=f26e142]

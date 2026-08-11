@@ -1,0 +1,54 @@
+- generic [active] [ref=f12e1]:
+  - banner [ref=f12e2]:
+    - generic [ref=f12e4]:
+      - link "Nicerella — home" [ref=f12e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f12e9]: nicerella
+      - navigation "Primary" [ref=f12e10]:
+        - link "Products" [ref=f12e11] [cursor=pointer]:
+          - /url: /
+        - link "Pricing" [ref=f12e12] [cursor=pointer]:
+          - /url: /pricing
+        - link "Articles" [ref=f12e13] [cursor=pointer]:
+          - /url: /articles
+  - main [ref=f12e14]:
+    - navigation "Breadcrumb" [ref=f12e15]:
+      - list [ref=f12e16]:
+        - listitem [ref=f12e17]:
+          - link "Home" [ref=f12e18] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=f12e19]:
+          - generic [ref=f12e20]: /
+          - generic [ref=f12e21]: "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics"
+    - generic [ref=f12e22]:
+      - 'img "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [ref=f12e25]'
+      - generic [ref=f12e26]:
+        - generic [ref=f12e27]:
+          - 'heading "Amazon.com: Soundcore by Anker Q20i Hybrid Active Noise Cancelling Headphones, Pink | Over-Ear, Bluetooth, 40H ANC Playtime, Hi-Res Audio, Big Bass, Transparency Mode, Customize via App, Travel, Home, Office : Electronics" [level=1] [ref=f12e28]'
+          - paragraph [ref=f12e29]: 4 reviews · [demo] Amazon (wireless headphones) · $44.99
+        - generic [ref=f12e30]:
+          - generic [ref=f12e31]:
+            - generic [ref=f12e35]: highly trustworthy
+            - generic [ref=f12e36]: 92%
+          - 'progressbar "Trust score: highly trustworthy, 92%" [ref=f12e37]'
+          - generic [ref=f12e39]:
+            - paragraph [ref=f12e40]: Excellent authenticity. Reviews appear genuine with minimal suspicious patterns.
+            - generic [ref=f12e41]:
+              - generic [ref=f12e42]:
+                - generic [ref=f12e43]: Estimated Fake Reviews
+                - generic [ref=f12e44]: 5%
+              - generic [ref=f12e45]:
+                - generic [ref=f12e46]: Analysis Confidence
+                - generic [ref=f12e47]: 90%
+            - paragraph [ref=f12e48]: This is an AI estimate based on available data, not a certified fraud determination.
+    - insertion [ref=f12e51]:
+      - iframe [ref=f12e53]:
+        
+    - generic [ref=f12e54]:
+      - heading "Unlock the full analysis" [level=3] [ref=f12e58]
+      - paragraph [ref=f12e59]: Pro gives you the complete sentiment breakdown, red-flag report, and similar-product comparisons.
+      - generic [ref=f12e60]:
+        - link "Start 14-day free trial" [ref=f12e61] [cursor=pointer]:
+          - /url: /pricing
+        - paragraph [ref=f12e62]: No credit card required · Cancel anytime
+  - alert [ref=f12e63]

@@ -64,7 +64,11 @@ export async function getOrCreatePriceId(
 
   const env = stripeEnv();
   const envPrice = env.priceIds[plan][interval];
-  if (envPrice) return envPrice;
+  // Only honor env overrides that look like real Stripe price IDs. Placeholder
+  // values (e.g. `()` or empty) must not reach Stripe as a price id — that
+  // would fail checkout with "No such price: ()" (AGENTS.md section 15/18:
+  // never trust env placeholders).
+  if (envPrice && envPrice.startsWith("price_")) return envPrice;
 
   const lookupKey = PRICE_LOOKUP_KEYS[plan][interval];
   const existing = await stripe.prices.list({

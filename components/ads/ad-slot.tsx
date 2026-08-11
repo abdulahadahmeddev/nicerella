@@ -33,6 +33,7 @@ export function AdSlot({ slot, className, format = "auto" }: AdSlotProps) {
 
   useEffect(() => {
     if (!adsenseConfigured()) return;
+    if (!slot) return;
     if (pushed.current || pushedSlots.has(slot)) return;
     pushed.current = true;
     pushedSlots.add(slot);
@@ -45,6 +46,7 @@ export function AdSlot({ slot, className, format = "auto" }: AdSlotProps) {
   }, [slot]);
 
   if (!adsenseConfigured()) return null;
+  if (!slot) return null;
 
   return (
     <div className={cn("ad-slot", className)}>
